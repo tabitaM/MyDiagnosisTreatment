@@ -3,6 +3,7 @@ package com.tabita.mydiagnosistreatment;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 public class SignUpActivity extends AppCompatActivity {
@@ -12,10 +13,9 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
-        Intent intent=getIntent();
-        String ids = intent.getStringExtra(LoginActivity.EXTRA_MESSAGE);
+    }
 
-        TextView textView  = findViewById(R.id.textView);
-        textView.setText(ids);
+    public void signUp(View view) {
+        startActivity(new Intent(this, ClientActivity.class));
     }
 }
