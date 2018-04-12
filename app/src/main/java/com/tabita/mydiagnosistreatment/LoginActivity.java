@@ -25,6 +25,13 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.AuthResult;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +65,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private FirebaseAuth mAuth;
+    private TextView mStatusTextView;
+    private TextView mDetailTextView;
+    EditText emailView = findViewById(R.id.email);
+    EditText passwordView = findViewById(R.id.password);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +93,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+        mAuth = FirebaseAuth.getInstance();
     }
 
     private void populateAutoComplete() {
@@ -340,12 +353,98 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     public void signIn(View view) {
+
         startActivity(new Intent(this, ClientActivity.class));
     }
 
     public void register(View view) {
         startActivity(new Intent(this, SignUpActivity.class));
+        // int i = view.getId();
+        //if(i  == R.id.email_register_button){
+        // createAccount(emailView.getText().toString(), passwordView.getText().toString());
+        // }
     }
 
+    /*@Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        updateUI(currentUser);
+    }
+
+    private void updateUI(FirebaseUser user) {
+        if(user != null){
+            findViewById(R.id.email_sign_in_button);
+        }
+    }*/
+
+    private void createAccount(String email, String password) {
+        //Log.d(TAG, "createAccount:" + email);
+        if (!validateForm()) {
+            return;
+        }
+
+        //showProgressDialog();
+
+        // [START create_user_with_email]
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            //Log.d(TAG, "createUserWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            //updateUI(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            //Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                            // updateUI(null);
+                        }
+
+                        // [START_EXCLUDE]
+                        //hideProgressDialog();
+                        // [END_EXCLUDE]
+                    }
+                });
+        // [END create_user_with_email]
+    }
+
+    private boolean validateForm() {
+        boolean valid = true;
+
+        String email = emailView.getText().toString();
+        if (TextUtils.isEmpty(email)) {
+            emailView.setError("Required.");
+            valid = false;
+        } else {
+            emailView.setError(null);
+        }
+
+        String password = passwordView.getText().toString();
+        if (TextUtils.isEmpty(password)) {
+            passwordView.setError("Required.");
+            valid = false;
+        } else {
+            passwordView.setError(null);
+        }
+
+        return valid;
+    }
+
+    /*private void updateUI(FirebaseUser user) {
+        //hideProgressDialog();
+        if (user != null) {
+            mStatusTextView.setText(getString(R.string.emailpassword_status_fmt,
+                    user.getEmail(), user.isEmailVerified()));
+            mDetailTextView.setText(getString(R.string.firebase_status_fmt, user.getUid()));
+        } else {
+            mStatusTextView.setText(R.string.signed_out);
+            mDetailTextView.setText(null);
+        }
+    }*/
 }
 
