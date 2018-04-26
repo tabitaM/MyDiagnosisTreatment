@@ -30,6 +30,19 @@
             android:text="@string/action_logout"
             android:onClick="logout"/>
 
+        <ListView
+            android:id="@+id/medsListView"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="5dp"
+            android:background="@android:color/transparent"
+            android:cacheColorHint="@android:color/transparent"
+            android:divider="#CCCCCC"
+            android:dividerHeight="1dp"
+            android:paddingLeft="2dp" >
+        </ListView>
+
     </LinearLayout>
 
     <android.support.design.widget.BottomNavigationView
