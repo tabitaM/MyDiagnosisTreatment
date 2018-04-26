@@ -1,6 +1,6 @@
 package com.tabita.mydiagnosistreatment.model;
 
-class Medication {
+public class Medication {
     private String name;
     private String dose;
 

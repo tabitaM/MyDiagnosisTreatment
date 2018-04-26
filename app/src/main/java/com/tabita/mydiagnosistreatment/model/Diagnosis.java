@@ -5,7 +5,7 @@ import java.util.List;
 public class Diagnosis {
 
     private String name;
-    private List<String> keyword;
+    private List<String> keywords;
     private Treatment treatment;
 
     public Diagnosis() {
@@ -19,12 +19,12 @@ public class Diagnosis {
         this.name = name;
     }
 
-    public List<String> getKeyword() {
-        return keyword;
+    public List<String> getKeywords() {
+        return keywords;
     }
 
-    public void setKeyword(List<String> keyword) {
-        this.keyword = keyword;
+    public void setKeywords(List<String> keywords) {
+        this.keywords = keywords;
     }
 
     public Treatment getTreatment() {
@@ -39,7 +39,7 @@ public class Diagnosis {
     public String toString() {
         return "Diagnosis{" +
                 "name='" + name + '\'' +
-                ", keyword=" + keyword +
+                ", keyword=" + keywords +
                 ", treatment=" + treatment +
                 '}';
     }

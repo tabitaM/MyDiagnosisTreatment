@@ -2,7 +2,7 @@ package com.tabita.mydiagnosistreatment.model;
 
 import java.util.List;
 
-class Treatment {
+public class Treatment {
 
     private String notes;
     private String period;

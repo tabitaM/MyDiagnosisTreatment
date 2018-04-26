@@ -19,7 +19,7 @@
         completions."
     </string>
     <string name="title_activity_client">ClientActivity</string>
-    <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_diagnosis">Diagnosis</string>
+    <string name="title_past_treatments">Past Treatments</string>
 </resources>
