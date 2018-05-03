@@ -1,5 +1,7 @@
 package com.tabita.mydiagnosistreatment;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -7,7 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,9 +32,10 @@ public class ClientActivity extends AppCompatActivity {
 
     private TextView mTextMessage;
     private ListView diagnosisListView;
-
+    public static final String KEY_LIST_NAME = "LIST_NAME";
     private List<Diagnosis> diagnosisList = new ArrayList<>();
-
+    private TextView textViewDetails;
+    private ArrayAdapter<String> adapter;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -84,13 +89,19 @@ public class ClientActivity extends AppCompatActivity {
         });
 
 
-        diagnosisListView.setOnItemClickListener((parent, view, position, id) -> {
+       diagnosisListView.setOnItemClickListener((parent, view, position, id) -> {
             String diagnosisName = parent.getItemAtPosition(position).toString();
             for (Diagnosis cursor : diagnosisList) {
                 if (cursor.getName().equals(diagnosisName)) {
+                    textViewDetails=findViewById(R.id.diagnosis_details);
+                    adapter=new ArrayAdapter<>(ClientActivity.this, R.layout.activity_diagnosis_details,R.id.diagnosis);
+                    textViewDetails.setAdapter(adapter);
+                    Intent intent = new Intent(ClientActivity.this,DiagnosisDetails.class);
+                    intent.putExtra(KEY_LIST_NAME, cursor.toString());
+                    startActivity(intent);
                     // Trimite folosindu-te de intent tot obiectul cursor de tipul Diagnosis.
                     // Il va primi o activitate de detaliu pe tratament care va afisa toata informatia
-                    Toast.makeText(this, cursor.toString(), Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(this, cursor.toString(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
