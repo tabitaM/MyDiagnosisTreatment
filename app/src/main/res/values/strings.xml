@@ -22,4 +22,8 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_diagnosis">Diagnosis</string>
     <string name="title_past_treatments">Past Treatments</string>
+    <string name="diagnosis_details_treatment">Treatment</string>
+    <string name="diagnosis_details_medication">Medication</string>
+    <string name="diagnosis_details_dose">dose</string>
+    <string name="diagnosis_details_name">name</string>
 </resources>

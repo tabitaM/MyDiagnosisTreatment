@@ -1,8 +1,9 @@
 package com.tabita.mydiagnosistreatment.model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Diagnosis {
+public class Diagnosis implements Serializable {
 
     private String name;
     private List<String> keywords;

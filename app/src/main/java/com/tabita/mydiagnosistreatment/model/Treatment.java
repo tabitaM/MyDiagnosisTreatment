@@ -1,8 +1,9 @@
 package com.tabita.mydiagnosistreatment.model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Treatment {
+public class Treatment implements Serializable {
 
     private String notes;
     private String period;

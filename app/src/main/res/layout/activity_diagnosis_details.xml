@@ -1,21 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".DiagnosisDetails">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:padding="10sp">
 
-    <TextView
-        android:id="@+id/diagnosis_details"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="test"
+            android:textSize="30sp" />
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/treatment_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/name"
+            android:text="@string/diagnosis_details_treatment" />
+
+        <TextView
+            android:id="@+id/period"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/treatment_text"
+            android:layout_alignParentEnd="true"
+            android:text="period" />
+
+        <TextView
+            android:id="@+id/medication_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/treatment_text"
+            android:layout_marginTop="30sp"
+            android:text="@string/diagnosis_details_medication"
+            android:textSize="20sp" />
+
+        <View
+            android:id="@+id/medication_delimiter"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="5sp"
+            android:layout_below="@id/medication_text"
+            android:background="#000" />
+
+        <TextView
+            android:id="@+id/medication_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/medication_delimiter"
+            android:layout_marginLeft="20sp"
+            android:text="@string/diagnosis_details_name" />
+
+        <TextView
+            android:id="@+id/medication_dose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/medication_name"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/medication_delimiter"
+            android:layout_marginRight="20sp"
+            android:text="@string/diagnosis_details_dose" />
+
+    </RelativeLayout>
 
 </android.support.constraint.ConstraintLayout>

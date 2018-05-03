@@ -1,6 +1,8 @@
 package com.tabita.mydiagnosistreatment.model;
 
-public class Medication {
+import java.io.Serializable;
+
+public class Medication implements Serializable {
     private String name;
     private String dose;
 
