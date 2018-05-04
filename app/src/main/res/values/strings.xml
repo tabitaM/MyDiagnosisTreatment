@@ -25,7 +25,8 @@
     <string name="diagnosis_details_treatment">Treatment</string>
     <string name="diagnosis_details_medication">Medication</string>
     <string name="diagnosis_details_dose">dose</string>
-    <string name="diagnosis_details_name">name</string>
     <string name="diagnosis_details_notes_text">Notes</string>
     <string name="diagnosis_details_notes">Note details</string>
+    <string name="diagnosis_details_period">2 weeks</string>
+    <string name="diagnosis_details_name">Fever</string>
 </resources>
