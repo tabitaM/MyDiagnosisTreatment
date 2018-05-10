@@ -1,68 +1,83 @@
 package com.tabita.mydiagnosistreatment;
 
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MenuItem;
+import android.util.Log;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.TextView;
+
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.tabita.mydiagnosistreatment.model.Diagnosis;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClientActivity extends AppCompatActivity {
 
-    private TextView mTextMessage;
-    private FrameLayout frame;
-    private BottomNavigationView navigation;
     private DashboardFragment dashboardFragment;
     private DiagnosisFragment diagnosisFragment;
     private PastTreatmentsFragment pastTreatmentsFragment;
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_dashboard:
-                    mTextMessage.setText(R.string.title_dashboard);
-                    setFragment(dashboardFragment);
-                    return true;
-                case R.id.navigation_diagnosis:
-                    mTextMessage.setText(R.string.title_diagnosis);
-                    setFragment(diagnosisFragment);
-                    return true;
-                case R.id.navigation_past_treatment:
-                    mTextMessage.setText(R.string.title_past_treatments);
-                    setFragment(pastTreatmentsFragment);
-                    return true;
-            }
-            return false;
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client);
 
-        // Gui
-        mTextMessage = findViewById(R.id.message);
-        frame = findViewById(R.id.main_frame);
-        navigation = findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        BottomNavigationView navigation = findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.navigation_dashboard:
+                    setFragment(dashboardFragment);
+                    return true;
+                case R.id.navigation_diagnosis:
+                    setFragment(diagnosisFragment);
+                    return true;
+                case R.id.navigation_past_treatment:
+                    setFragment(pastTreatmentsFragment);
+                    return true;
+            }
+            return false;
+        });
 
         dashboardFragment = new DashboardFragment();
         diagnosisFragment = new DiagnosisFragment();
         pastTreatmentsFragment = new PastTreatmentsFragment();
 
         setFragment(dashboardFragment);
+        getDiagnosisListFromFirebase();
+    }
+
+    private void getDiagnosisListFromFirebase() {
+        final DatabaseReference myRef = FirebaseDatabase.getInstance().getReference().child("diagnosis");
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<Diagnosis> diagnosisList = new ArrayList<>();
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    Diagnosis diagnosis = postSnapshot.getValue(Diagnosis.class);
+                    diagnosisList.add(diagnosis);
+                }
+
+                diagnosisFragment.setDiagnosisList(diagnosisList);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w("ERROR", "Failed to read values diagnosis from firebase.", error.toException());
+            }
+        });
     }
 
     private void setFragment(Fragment fragment) {
         android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.main_frame, fragment);
+        fragmentTransaction.replace(R.id.mainLayout, fragment);
         fragmentTransaction.commit();
     }
 

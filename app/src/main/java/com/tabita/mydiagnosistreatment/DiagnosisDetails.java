@@ -22,7 +22,7 @@ public class DiagnosisDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_diagnosis_details);
 
-        Diagnosis diagnosis = (Diagnosis) getIntent().getSerializableExtra(DashboardFragment.KEY);
+        Diagnosis diagnosis = (Diagnosis) getIntent().getSerializableExtra(DiagnosisFragment.KEY);
 
         // Diagnosis Name
         diagnosisNameView = findViewById(R.id.name);
