@@ -20,6 +20,7 @@
         android:layout_alignBottom="@+id/name"
         android:layout_alignEnd="@+id/medication_delimiter"
         android:background="@color/colorAccent"
+        android:onClick="subscribe"
         android:text="@string/diagnosis_details_subscribe"
         android:textColor="@color/colorText" />
 

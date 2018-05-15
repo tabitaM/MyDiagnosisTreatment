@@ -75,7 +75,7 @@ public class ClientActivity extends AppCompatActivity {
         });
     }
 
-    private void setFragment(Fragment fragment) {
+    public void setFragment(Fragment fragment) {
         android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.mainLayout, fragment);
         fragmentTransaction.commit();

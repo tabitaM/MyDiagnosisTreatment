@@ -2,6 +2,7 @@ package com.tabita.mydiagnosistreatment;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -41,5 +42,10 @@ public class DiagnosisDetails extends AppCompatActivity {
         notesView = findViewById(R.id.notes);
         notesView.setText((diagnosis.getTreatment().getNotes()));
 
+    }
+
+    public void subscribe(View view){
+       // setFragment(new DashboardFragment());
+        getSupportFragmentManager().beginTransaction().replace(R.id.mainLayout,new DashboardFragment()).commit();
     }
 }
