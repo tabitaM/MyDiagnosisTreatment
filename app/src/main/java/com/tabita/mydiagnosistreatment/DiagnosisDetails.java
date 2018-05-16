@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tabita.mydiagnosistreatment.model.Diagnosis;
 import com.tabita.mydiagnosistreatment.model.Medication;
@@ -51,6 +52,9 @@ public class DiagnosisDetails extends AppCompatActivity {
         Intent intent = new Intent();
         intent.putExtra(DiagnosisFragment.KEY, diagnosis);
         setResult(RESULT_OK, intent);
+
+        Toast.makeText(this, "You are now subscribed to " + diagnosis.getName() + " treatment", Toast.LENGTH_SHORT).show();
+
         finish();
     }
 }
