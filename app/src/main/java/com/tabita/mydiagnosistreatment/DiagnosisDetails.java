@@ -1,5 +1,6 @@
 package com.tabita.mydiagnosistreatment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -18,12 +19,14 @@ public class DiagnosisDetails extends AppCompatActivity {
     private ListView medicationListView;
     private TextView notesView;
 
+    private Diagnosis diagnosis;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_diagnosis_details);
 
-        Diagnosis diagnosis = (Diagnosis) getIntent().getSerializableExtra(DiagnosisFragment.KEY);
+        diagnosis = (Diagnosis) getIntent().getSerializableExtra(DiagnosisFragment.KEY);
 
         // Diagnosis Name
         diagnosisNameView = findViewById(R.id.name);
@@ -44,8 +47,10 @@ public class DiagnosisDetails extends AppCompatActivity {
 
     }
 
-    public void subscribe(View view){
-       // setFragment(new DashboardFragment());
-        getSupportFragmentManager().beginTransaction().replace(R.id.mainLayout,new DashboardFragment()).commit();
+    public void subscribe(View view) {
+        Intent intent = new Intent();
+        intent.putExtra(DiagnosisFragment.KEY, diagnosis);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 }

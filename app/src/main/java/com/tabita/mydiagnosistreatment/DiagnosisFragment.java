@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 public class DiagnosisFragment extends Fragment {
 
     private List<Diagnosis> diagnosisList = new ArrayList<>();
+    static final int PICK_CONTACT_REQUEST = 1;
     public static final String KEY = "key";
 
     public DiagnosisFragment() {
@@ -34,21 +35,36 @@ public class DiagnosisFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_diagnosis, container, false);
         ListView diagnosisListView = view.findViewById(R.id.diagnosis);
 
-        diagnosisListView.setAdapter(new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_list_item_1, diagnosisList.stream().map(Diagnosis::getName).collect(Collectors.toList())));
+        diagnosisListView.setAdapter(
+                new ArrayAdapter<>(getActivity(),
+                        android.R.layout.simple_list_item_1,
+                        diagnosisList.stream().map(Diagnosis::getName).collect(Collectors.toList())));
 
         diagnosisListView.setOnItemClickListener((parent, listView, position, id) -> {
             String diagnosisName = parent.getItemAtPosition(position).toString();
             for (Diagnosis cursor : diagnosisList) {
                 if (cursor.getName().equals(diagnosisName)) {
 
+                    // Start DiagnosisDetails Activity
                     Intent intent = new Intent(getActivity(), DiagnosisDetails.class);
                     intent.putExtra(KEY, cursor);
-                    startActivity(intent);
+                    startActivityForResult(intent, PICK_CONTACT_REQUEST);
+
                 }
             }
         });
         return view;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_CONTACT_REQUEST) {
+            if (resultCode == DiagnosisDetails.RESULT_OK) {
+                ClientActivity clientActivity = (ClientActivity) getActivity();
+                clientActivity.setCurrentTreatment((Diagnosis) data.getSerializableExtra(KEY));
+            }
+        }
     }
 
     public void setDiagnosisList(List<Diagnosis> diagnosisList) {

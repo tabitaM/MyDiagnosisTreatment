@@ -24,12 +24,18 @@ public class ClientActivity extends AppCompatActivity {
     private DiagnosisFragment diagnosisFragment;
     private PastTreatmentsFragment pastTreatmentsFragment;
 
+    private BottomNavigationView navigation;
+
+    private Diagnosis currentTreatment;
+    private List<Diagnosis> diagnosisList = new ArrayList<>();
+    private List<Diagnosis> pastTreatmentList = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client);
 
-        BottomNavigationView navigation = findViewById(R.id.navigation);
+        navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.navigation_dashboard:
@@ -58,7 +64,6 @@ public class ClientActivity extends AppCompatActivity {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<Diagnosis> diagnosisList = new ArrayList<>();
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     Diagnosis diagnosis = postSnapshot.getValue(Diagnosis.class);
                     diagnosisList.add(diagnosis);
@@ -75,7 +80,20 @@ public class ClientActivity extends AppCompatActivity {
         });
     }
 
-    public void setFragment(Fragment fragment) {
+    public void setCurrentTreatment(Diagnosis diagnosis) {
+
+        currentTreatment = diagnosis;
+        dashboardFragment.setCurrentTreatment(diagnosis);
+
+        //
+        // pastTreatmentList.add(diagnosis);
+        // pastTreatmentsFragment.setPastTreatmentList(pastTreatmentList);
+
+        setFragment(dashboardFragment);
+        navigation.setSelectedItemId(R.id.navigation_dashboard);
+    }
+
+    private void setFragment(Fragment fragment) {
         android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.mainLayout, fragment);
         fragmentTransaction.commit();
@@ -85,4 +103,5 @@ public class ClientActivity extends AppCompatActivity {
         FirebaseAuth.getInstance().signOut();
         finish();
     }
+
 }
