@@ -20,11 +20,10 @@ public class DashboardFragment extends Fragment {
 
     public Diagnosis currentTreatment;
     private TextView currentTreatmentView;
-    //Date currentTime = Calendar.getInstance().getTime();
+    private TextView periodDoseView;
+    private TextView periodDoseTextView;
     String currentTime = DateFormat.getDateInstance().format(new Date());
     TextView dateView;
-    private Diagnosis diagnosis;
-    private TextView periodDoseView;
 
     public DashboardFragment() {
         // Required empty public constructor
@@ -37,11 +36,15 @@ public class DashboardFragment extends Fragment {
         currentTreatmentView = view.findViewById(R.id.currentTreatment);
         dateView = view.findViewById(R.id.date);
         periodDoseView = view.findViewById(R.id.periodDoseValues);
+        periodDoseTextView = view.findViewById(R.id.periodDoseText);
+        String messageString=periodDoseTextView.getText().toString();
 
         dateView.setText(currentTime);
-        //periodDoseView.setText(diagnosis.getTreatment().getPeriod());
         if (currentTreatment != null) {
+            periodDoseTextView.setText(messageString);
             currentTreatmentView.setText(currentTreatment.getName());
+            periodDoseView.setText(currentTreatment.getTreatment().getPeriod());
+
         }
 
         return view;
