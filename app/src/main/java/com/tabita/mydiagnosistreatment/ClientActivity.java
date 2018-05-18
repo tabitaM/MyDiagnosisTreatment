@@ -86,8 +86,8 @@ public class ClientActivity extends AppCompatActivity {
         dashboardFragment.setCurrentTreatment(diagnosis);
 
         //
-        // pastTreatmentList.add(diagnosis);
-        // pastTreatmentsFragment.setPastTreatmentList(pastTreatmentList);
+         //pastTreatmentList.add(diagnosis);
+         //pastTreatmentsFragment.setPastTreatmentList(pastTreatmentList);
 
         setFragment(dashboardFragment);
         navigation.setSelectedItemId(R.id.navigation_dashboard);
@@ -103,5 +103,4 @@ public class ClientActivity extends AppCompatActivity {
         FirebaseAuth.getInstance().signOut();
         finish();
     }
-
 }
