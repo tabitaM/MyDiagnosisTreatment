@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -11,7 +12,9 @@ import android.widget.Toast;
 import com.tabita.mydiagnosistreatment.model.Diagnosis;
 import com.tabita.mydiagnosistreatment.model.Medication;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DiagnosisDetails extends AppCompatActivity {
 
@@ -28,6 +31,7 @@ public class DiagnosisDetails extends AppCompatActivity {
         setContentView(R.layout.activity_diagnosis_details);
 
         diagnosis = (Diagnosis) getIntent().getSerializableExtra(DiagnosisFragment.KEY);
+
 
         // Diagnosis Name
         diagnosisNameView = findViewById(R.id.name);
