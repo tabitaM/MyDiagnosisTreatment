@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="10sp"
+    android:background="@color/black"
     tools:context=".DashboardFragment">
 
     <TextView
@@ -13,6 +14,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:text="@string/dashboard_current_treatment_text"
+        android:textColor="@color/colorGray"
         android:textSize="20sp" />
 
     <TextView
@@ -22,7 +24,7 @@
         android:layout_alignBottom="@+id/currentTreatment"
         android:layout_alignEnd="@+id/dashboardDelimiter"
         android:paddingBottom="3dp"
-        android:text="dfdettu"
+        android:textColor="@color/colorGray"
         android:textSize="12sp" />
 
     <View
@@ -40,6 +42,7 @@
         android:layout_height="wrap_content"
         android:textSize="16sp"
         android:paddingTop="5sp"
+        android:textColor="@color/colorGray"
         android:layout_below="@id/currentTreatment"/>
 
     <TextView
@@ -49,6 +52,7 @@
         android:textSize="16sp"
         android:paddingTop="5sp"
         android:layout_alignEnd="@id/dashboardDelimiter"
+        android:textColor="@color/colorGray"
         android:layout_below="@id/currentTreatment"/>
 
     <TextView
@@ -58,7 +62,8 @@
         android:layout_below="@id/periodDoseText"
         android:layout_marginTop="10sp"
         android:paddingTop="3dp"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:textColor="@color/colorGray"/>
 
     <View
         android:id="@+id/medication_delimiter"
@@ -76,6 +81,7 @@
         android:layout_below="@id/medication_delimiter"
         android:layout_marginEnd="20sp"
         android:layout_marginStart="10sp"
+        android:textColor="@color/colorGray"
         android:textSize="20sp" />
 
     <Button
@@ -88,5 +94,5 @@
         android:background="@color/colorAccent"
         android:onClick="unsubscribe"
         android:text="@string/diagnosis_details_unsubscribe"
-        android:textColor="@color/colorText" />
+        android:textColor="@color/colorButton" />
 </RelativeLayout>
