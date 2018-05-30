@@ -1,6 +1,11 @@
 package com.tabita.mydiagnosistreatment;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -79,5 +84,16 @@ public class DashboardFragment extends Fragment {
     }
 
     public void unsubscribe(View view){
+    }
+
+    private void startAlarm(View view){
+        AlarmManager manager = (AlarmManager)getContext().getSystemService(Context.ALARM_SERVICE);
+        Intent intent;
+        PendingIntent pendingIntent;
+
+        intent = new Intent(getActivity(), AlarmNotificationReceiver.class);
+        pendingIntent = PendingIntent.getBroadcast(getContext(), 0, intent, 0);
+
+        manager.setRepeating(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime()+3000,3000,pendingIntent);
     }
 }

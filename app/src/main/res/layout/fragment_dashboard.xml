@@ -96,4 +96,16 @@
         android:text="@string/diagnosis_details_unsubscribe"
         android:textColor="@color/colorButton" />
 
+    <Button
+        android:id="@+id/alarm_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/medication_list_dashboardFragment"
+        android:layout_alignTop="@+id/unsubscribe"
+        android:background="@color/colorAccent"
+        android:layout_marginBottom="68dp"
+        android:onClick="startAlarm"
+        android:text="ALARM"
+        android:textColor="@color/colorButton" />
+
 </RelativeLayout>
