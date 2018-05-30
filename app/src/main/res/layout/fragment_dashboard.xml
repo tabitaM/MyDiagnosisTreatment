@@ -34,7 +34,7 @@
         android:layout_below="@id/currentTreatment"
         android:layout_marginBottom="5sp"
         android:layout_marginEnd="20sp"
-        android:background="#294860" />
+        android:background="@color/colorGray" />
 
     <TextView
         android:id="@+id/periodDoseText"
@@ -72,7 +72,7 @@
         android:layout_below="@id/medication_text"
         android:layout_marginBottom="5sp"
         android:layout_marginEnd="20sp"
-        android:background="#294860" />
+        android:background="@color/colorGray" />
 
     <ListView
         android:id="@+id/medication_list_dashboardFragment"
@@ -95,4 +95,5 @@
         android:onClick="unsubscribe"
         android:text="@string/diagnosis_details_unsubscribe"
         android:textColor="@color/colorButton" />
+
 </RelativeLayout>

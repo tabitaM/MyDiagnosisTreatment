@@ -29,7 +29,7 @@ public class DiagnosisFragment extends Fragment {
     private List<Diagnosis> diagnosisList = new ArrayList<>();
     static final int PICK_CONTACT_REQUEST = 1;
     public static final String KEY = "key";
-    private SearchView searchBox;
+    private EditText searchBox;
     private ArrayAdapter<Diagnosis> adapter;
 
     public DiagnosisFragment() {
@@ -41,7 +41,7 @@ public class DiagnosisFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_diagnosis, container, false);
         ListView diagnosisListView = view.findViewById(R.id.diagnosis);
         searchBox = view.findViewById(R.id.search);
-        searchBox.setQueryHint("Search...");
+        //searchBox.setQueryHint("Search...");
 
         adapter = new ArrayAdapter<>(getActivity(),android.R.layout.simple_list_item_1,diagnosisList);
         diagnosisListView.setAdapter(adapter);
@@ -65,7 +65,7 @@ public class DiagnosisFragment extends Fragment {
             }
         });
 
-        searchBox.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+     /*   searchBox.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
                 return false;
@@ -81,7 +81,23 @@ public class DiagnosisFragment extends Fragment {
                 //adapter.notifyDataSetChanged();
                 return false;
             }
-        });
+        });*/
+     searchBox.addTextChangedListener(new TextWatcher() {
+         @Override
+         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+         }
+
+         @Override
+         public void onTextChanged(CharSequence s, int start, int before, int count) {
+           adapter.getFilter().filter(s);
+         }
+
+         @Override
+         public void afterTextChanged(Editable s) {
+
+         }
+     });
         return view;
     }
 

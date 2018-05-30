@@ -6,17 +6,18 @@
     android:background="@color/black"
     tools:context=".DiagnosisFragment">
 
-    <SearchView
+    <EditText
         android:id="@+id/search"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent" />
+        android:layout_width="match_parent"
+        android:hint="Search..."/>
 
     <ListView
         android:id="@+id/diagnosis"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/search"
-        android:divider="#CCCCCC"
+        android:divider="#000000"
         android:dividerHeight="1dp" />
 
 </RelativeLayout>

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -29,6 +30,8 @@ public class DashboardFragment extends Fragment {
     private TextView periodDoseView;
     private TextView periodDoseTextView;
     private TextView medicationTextView;
+    private Button unsubscribeButton;
+    private View medicationDelimiter;
 
 
     String currentTime = DateFormat.getDateInstance().format(new Date());
@@ -49,6 +52,8 @@ public class DashboardFragment extends Fragment {
         periodDoseView = view.findViewById(R.id.periodDoseValues);
         periodDoseTextView = view.findViewById(R.id.periodDoseText);
         medicationTextView = view.findViewById(R.id.medication_text);
+        unsubscribeButton = view.findViewById(R.id.unsubscribe);
+        medicationDelimiter = view.findViewById(R.id.medication_delimiter);
 
         /*// Medication List
         List<Medication> medicationList = diagnosis.getTreatment().getMedication();
@@ -61,6 +66,10 @@ public class DashboardFragment extends Fragment {
             currentTreatmentView.setText(currentTreatment.getName());
             periodDoseView.setText(currentTreatment.getTreatment().getPeriod());
             medicationTextView.setText("Medication");
+        }
+        else{
+            unsubscribeButton.setVisibility(view.GONE);
+            medicationDelimiter.setVisibility(view.GONE);
         }
         return view;
     }
