@@ -57,7 +57,9 @@ public class DiagnosisFragment extends Fragment {
 
                     // Start DiagnosisDetails Activity
                     Intent intent = new Intent(getActivity(), DiagnosisDetails.class);
+                    Intent intent1 = new Intent(getActivity(), DashboardFragment.class);
                     intent.putExtra(KEY, cursor);
+                    intent1.putExtra(KEY, cursor);
                     startActivityForResult(intent, PICK_CONTACT_REQUEST);
 
                 }

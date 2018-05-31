@@ -88,9 +88,8 @@
         android:id="@+id/unsubscribe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="68dp"
+        android:layout_alignEnd="@+id/currentTreatment"
+        android:layout_alignTop="@+id/alarm_button"
         android:background="@color/colorAccent"
         android:onClick="unsubscribe"
         android:text="@string/diagnosis_details_unsubscribe"
@@ -100,12 +99,12 @@
         android:id="@+id/alarm_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/medication_list_dashboardFragment"
-        android:layout_alignTop="@+id/unsubscribe"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/currentTreatment"
+        android:layout_marginBottom="64dp"
         android:background="@color/colorAccent"
-        android:layout_marginBottom="68dp"
-        android:onClick="startAlarm"
-        android:text="ALARM"
+        android:text="Set Alarm"
         android:textColor="@color/colorButton" />
+
 
 </RelativeLayout>

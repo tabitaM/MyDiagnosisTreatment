@@ -1,11 +1,20 @@
 package com.tabita.mydiagnosistreatment;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -18,12 +27,11 @@ import com.tabita.mydiagnosistreatment.model.Diagnosis;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClientActivity extends AppCompatActivity {
+public class ClientActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener{
 
     private DashboardFragment dashboardFragment;
     private DiagnosisFragment diagnosisFragment;
     private PastTreatmentsFragment pastTreatmentsFragment;
-
     private BottomNavigationView navigation;
 
     private Diagnosis currentTreatment;
@@ -59,6 +67,11 @@ public class ClientActivity extends AppCompatActivity {
         getDiagnosisListFromFirebase();
     }
 
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        Toast.makeText(ClientActivity.this,"Alarm set to "+ hourOfDay + ":" + minute, Toast.LENGTH_LONG).show();
+    }
+
     private void getDiagnosisListFromFirebase() {
         final DatabaseReference myRef = FirebaseDatabase.getInstance().getReference().child("diagnosis");
         myRef.addValueEventListener(new ValueEventListener() {
@@ -86,8 +99,8 @@ public class ClientActivity extends AppCompatActivity {
         dashboardFragment.setCurrentTreatment(diagnosis);
 
         //
-         //pastTreatmentList.add(diagnosis);
-         //pastTreatmentsFragment.setPastTreatmentList(pastTreatmentList);
+         pastTreatmentList.add(diagnosis);
+         pastTreatmentsFragment.setPastTreatmentList(pastTreatmentList);
 
         setFragment(dashboardFragment);
         navigation.setSelectedItemId(R.id.navigation_dashboard);

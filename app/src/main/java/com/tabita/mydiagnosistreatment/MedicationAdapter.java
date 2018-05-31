@@ -11,7 +11,7 @@ import com.tabita.mydiagnosistreatment.model.Medication;
 
 import java.util.List;
 
-public class MedicationAdapter extends ArrayAdapter<Medication> {
+public class MedicationAdapter extends ArrayAdapter<Medication>{
 
     public MedicationAdapter(Context context, List<Medication> medications) {
         super(context, 0, medications);
