@@ -104,7 +104,8 @@
         android:layout_marginBottom="64dp"
         android:background="@color/colorAccent"
         android:text="Set Alarm"
-        android:textColor="@color/colorButton" />
+        android:textColor="@color/colorButton"
+        style="?android:attr/borderlessButtonStyle"/>
 
 
 </RelativeLayout>
