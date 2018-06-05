@@ -10,14 +10,17 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.tabita.mydiagnosistreatment.model.Diagnosis;
 import com.tabita.mydiagnosistreatment.model.Medication;
@@ -32,7 +35,7 @@ import java.util.stream.Collectors;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DashboardFragment extends Fragment {
+public class DashboardFragment extends Fragment implements TimePickerDialog.OnTimeSetListener{
 
     public Diagnosis currentTreatment;
     private TextView currentTreatmentView;
@@ -44,6 +47,10 @@ public class DashboardFragment extends Fragment {
     private Button alarmButton;
     private Diagnosis diagnosis;
     private ListView medicationListView;
+    private EditText editTextTitle;
+    private Button sendOnChannel;
+    private Button cancelAlarmButton;
+    private NotificationHelper mNotificationHelper;
 
 
     String currentTime = DateFormat.getDateInstance().format(new Date());
@@ -67,6 +74,10 @@ public class DashboardFragment extends Fragment {
         unsubscribeButton = view.findViewById(R.id.unsubscribe);
         medicationDelimiter = view.findViewById(R.id.medication_delimiter);
         alarmButton = view.findViewById(R.id.alarm_button);
+        editTextTitle = view.findViewById(R.id.edit_text_title);
+        sendOnChannel = view.findViewById(R.id.send_on_channel);
+        mNotificationHelper = new NotificationHelper(getContext());
+        cancelAlarmButton = view.findViewById(R.id.button_cancel_alarm);
 
        /* // Medication List
         List<Medication> medicationList = diagnosis.getTreatment().getMedication();
@@ -84,6 +95,7 @@ public class DashboardFragment extends Fragment {
             unsubscribeButton.setVisibility(view.GONE);
             medicationDelimiter.setVisibility(view.GONE);
             alarmButton.setVisibility(view.GONE);
+            cancelAlarmButton.setVisibility(view.GONE);
         }
 
 
@@ -99,6 +111,28 @@ public class DashboardFragment extends Fragment {
                 timePicker.show(getActivity().getFragmentManager(),"Time Picker");
             }
         });
+
+        sendOnChannel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendOnChannel();
+            }
+        });
+
+        cancelAlarmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cancelAlarm();
+            }
+        });
+
+        cancelAlarmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cancelAlarm();
+            }
+        });
+
         return view;
     }
 
@@ -115,7 +149,7 @@ public class DashboardFragment extends Fragment {
     public void unsubscribe(View view){
     }
 
-    public void startAlarm(View view){
+    /*public void startAlarm(View view){
         AlarmManager manager = (AlarmManager)getContext().getSystemService(Context.ALARM_SERVICE);
         Intent intent;
         PendingIntent pendingIntent;
@@ -124,5 +158,38 @@ public class DashboardFragment extends Fragment {
         pendingIntent = PendingIntent.getBroadcast(getContext(), 0, intent, 0);
 
         manager.setRepeating(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime()+3000,3000,pendingIntent);
+    }*/
+
+     public void sendOnChannel(){
+        NotificationCompat.Builder nb = mNotificationHelper.getChannelNotification();
+        mNotificationHelper.getManager().notify(1, nb.build());
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        //Toast.makeText(ClientActivity.this,"Alarm set to "+ hourOfDay + ":" + minute, Toast.LENGTH_LONG).show();
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        c.set(Calendar.MINUTE, minute);
+        c.set(Calendar.SECOND,0);
+
+        startAlarm(c);
+    }
+
+    public void startAlarm(Calendar c){
+         AlarmManager alarmManager = (AlarmManager) (getContext().getSystemService(Context.ALARM_SERVICE));
+         Intent intent = new Intent(getContext(), AlertReceiver.class);
+         PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(),1,intent,0);
+
+         alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+    }
+
+    private void cancelAlarm(){
+        AlarmManager alarmManager = (AlarmManager) (getContext().getSystemService(Context.ALARM_SERVICE));
+        Intent intent = new Intent(getContext(), AlertReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(),1,intent,0);
+
+        alarmManager.cancel(pendingIntent);
+        Toast.makeText(getContext(),"Alarm canceled.", Toast.LENGTH_LONG).show();
     }
 }

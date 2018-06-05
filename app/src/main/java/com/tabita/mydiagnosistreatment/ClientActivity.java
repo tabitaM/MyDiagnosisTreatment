@@ -8,12 +8,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -27,6 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.tabita.mydiagnosistreatment.model.Diagnosis;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class ClientActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener{
@@ -39,11 +42,18 @@ public class ClientActivity extends AppCompatActivity implements TimePickerDialo
     private Diagnosis currentTreatment;
     private List<Diagnosis> diagnosisList = new ArrayList<>();
     private List<Diagnosis> pastTreatmentList = new ArrayList<>();
+    /*private EditText editTextTitle;
+    private Button sendOnChannel;
+    private NotificationHelper mNotificationHelper;*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client);
+
+        /*editTextTitle = findViewById(R.id.edit_text_title);
+        sendOnChannel = findViewById(R.id.send_on_channel);
+        mNotificationHelper = new NotificationHelper(this);*/
 
         navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(item -> {
@@ -67,6 +77,13 @@ public class ClientActivity extends AppCompatActivity implements TimePickerDialo
 
         setFragment(dashboardFragment);
         getDiagnosisListFromFirebase();
+
+        /*sendOnChannel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendOnChannel(editTextTitle.getText().toString());
+            }
+        });*/
     }
 
     @Override
@@ -118,4 +135,9 @@ public class ClientActivity extends AppCompatActivity implements TimePickerDialo
         FirebaseAuth.getInstance().signOut();
         finish();
     }
+
+   /* public void sendOnChannel(String message){
+        NotificationCompat.Builder nb = mNotificationHelper.getChannelNotification(message);
+        mNotificationHelper.getManager().notify(1, nb.build());
+    }*/
 }

@@ -105,7 +105,31 @@
         android:background="@color/colorAccent"
         android:text="Set Alarm"
         android:textColor="@color/colorButton"
+        android:drawableBottom="@drawable/ic_access_alarm_black_24dp"
         style="?android:attr/borderlessButtonStyle"/>
 
+    <EditText
+        android:id="@+id/edit_text_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dashboardDelimiter"
+        android:hint="Message..."/>
+
+    <Button
+        android:id="@+id/send_on_channel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send on channel"
+        android:layout_below="@id/edit_text_title"/>
+
+    <Button
+        android:id="@+id/button_cancel_alarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/unsubscribe"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/colorButton"
+        android:background="@color/colorAccent"
+        android:text="cancel alarm" />
 
 </RelativeLayout>
