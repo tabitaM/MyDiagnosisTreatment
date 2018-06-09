@@ -74,14 +74,14 @@ public class DashboardFragment extends Fragment implements TimePickerDialog.OnTi
         unsubscribeButton = view.findViewById(R.id.unsubscribe);
         medicationDelimiter = view.findViewById(R.id.medication_delimiter);
         alarmButton = view.findViewById(R.id.alarm_button);
-        editTextTitle = view.findViewById(R.id.edit_text_title);
+        //editTextTitle = view.findViewById(R.id.edit_text_title);
         sendOnChannel = view.findViewById(R.id.send_on_channel);
         mNotificationHelper = new NotificationHelper(getContext());
         cancelAlarmButton = view.findViewById(R.id.button_cancel_alarm);
 
-       /* // Medication List
+        /*// Medication List to fill list from DashboardFragment
         List<Medication> medicationList = diagnosis.getTreatment().getMedication();
-        medicationListView = view.findViewById(R.id.medication_list);
+        medicationListView = view.findViewById(R.id.medication_list_dashboardFragment);
         medicationListView.setAdapter(new MedicationAdapter(getContext(), medicationList));*/
 
         dateView.setText(currentTime);

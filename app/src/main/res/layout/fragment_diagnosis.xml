@@ -6,11 +6,12 @@
     android:background="@color/black"
     tools:context=".DiagnosisFragment">
 
-    <EditText
+    <SearchView
         android:id="@+id/search"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:hint="Search..."/>
+        android:drawableLeft="@drawable/ic_search_black_24dp"
+        android:voiceSearchMode="showVoiceSearchButton|launchRecognizer"/>
 
     <ListView
         android:id="@+id/diagnosis"

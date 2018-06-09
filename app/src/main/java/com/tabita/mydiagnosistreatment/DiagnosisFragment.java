@@ -7,17 +7,21 @@ import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.SearchView;
 
 import com.tabita.mydiagnosistreatment.model.Diagnosis;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.zip.Inflater;
 
 
 /**
@@ -28,7 +32,7 @@ public class DiagnosisFragment extends Fragment {
     private List<Diagnosis> diagnosisList = new ArrayList<>();
     static final int PICK_CONTACT_REQUEST = 1;
     public static final String KEY = "key";
-    private EditText searchBox;
+    private SearchView searchBox;
     private ArrayAdapter<Diagnosis> adapter;
 
     public DiagnosisFragment() {
@@ -37,11 +41,13 @@ public class DiagnosisFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         View view = inflater.inflate(R.layout.fragment_diagnosis, container, false);
         ListView diagnosisListView = view.findViewById(R.id.diagnosis);
         searchBox = view.findViewById(R.id.search);
-        //searchBox.setQueryHint("Search...");
+        searchBox.setQueryHint("Search...");
 
+        //Populate diagnosisList list with diagnosis names
         adapter = new ArrayAdapter<>(getActivity(),android.R.layout.simple_list_item_1,diagnosisList);
         diagnosisListView.setAdapter(adapter);
 
@@ -57,16 +63,16 @@ public class DiagnosisFragment extends Fragment {
 
                     // Start DiagnosisDetails Activity
                     Intent intent = new Intent(getActivity(), DiagnosisDetails.class);
-                    Intent intent1 = new Intent(getActivity(), DashboardFragment.class);
                     intent.putExtra(KEY, cursor);
-                    intent1.putExtra(KEY, cursor);
                     startActivityForResult(intent, PICK_CONTACT_REQUEST);
 
                 }
             }
         });
 
-     /*   searchBox.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+
+        searchBox.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
                 return false;
@@ -82,8 +88,8 @@ public class DiagnosisFragment extends Fragment {
                 //adapter.notifyDataSetChanged();
                 return false;
             }
-        });*/
-     searchBox.addTextChangedListener(new TextWatcher() {
+        });
+     /*searchBox.addTextChangedListener(new TextWatcher() {
          @Override
          public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -91,15 +97,22 @@ public class DiagnosisFragment extends Fragment {
 
          @Override
          public void onTextChanged(CharSequence s, int start, int before, int count) {
-           adapter.getFilter().filter(s);
+           //adapter.getFilter().filter(s);
+             searchItem(s.toString());
          }
 
          @Override
          public void afterTextChanged(Editable s) {
 
          }
-     });
+     });*/
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.navigation, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -115,5 +128,14 @@ public class DiagnosisFragment extends Fragment {
 
     public void setDiagnosisList(List<Diagnosis> diagnosisList) {
         this.diagnosisList = diagnosisList;
+    }
+
+    public void searchItem(String textToSearch){
+        for(Diagnosis item:diagnosisList){
+            if(item.getName().equals(textToSearch)){
+                diagnosisList.remove(item);
+            }
+        }
+        adapter.notifyDataSetChanged();
     }
 }
