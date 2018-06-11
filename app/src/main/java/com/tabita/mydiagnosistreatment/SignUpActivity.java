@@ -2,19 +2,12 @@ package com.tabita.mydiagnosistreatment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -31,15 +24,12 @@ public class SignUpActivity extends AppCompatActivity {
         mPasswordView = findViewById(R.id.password);
         mPasswordConfirmView = findViewById(R.id.confirm_password);
 
-        mPasswordConfirmView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_NULL) {
-                    attemptLogin();
-                    return true;
-                }
-                return false;
+        mPasswordConfirmView.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_NULL) {
+                attemptLogin();
+                return true;
             }
+            return false;
         });
     }
 
@@ -57,16 +47,13 @@ public class SignUpActivity extends AppCompatActivity {
         }
 
         LoginActivity.mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            startActivity(new Intent(SignUpActivity.this, ClientActivity.class));
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Toast.makeText(SignUpActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-                        }
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        // Sign in success, update UI with the signed-in user's information
+                        startActivity(new Intent(SignUpActivity.this, ClientActivity.class));
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Toast.makeText(SignUpActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                     }
                 });
     }

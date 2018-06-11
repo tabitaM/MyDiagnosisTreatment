@@ -24,6 +24,15 @@
         android:textColor="@color/colorGray"
         android:textSize="35sp" />
 
+    <Button
+        android:id="@+id/unsubscribe"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/currentTreatment"
+        android:text="@string/diagnosis_details_unsubscribe" />
+
     <TextView
         android:id="@+id/period"
         android:layout_width="match_parent"

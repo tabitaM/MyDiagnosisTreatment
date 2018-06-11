@@ -39,10 +39,10 @@ public class DashboardFragment extends Fragment implements TimePickerDialog.OnTi
     private ImageView clockView;
     private ListView medicationListView;
     private TextView takePillsView;
+    private Button unsubscribeButton;
 
     private TextView periodDoseTextView;
     private TextView medicationTextView;
-    private Button unsubscribeButton;
     private View medicationDelimiter;
     private Button alarmButton;
     private EditText editTextTitle;
@@ -67,6 +67,10 @@ public class DashboardFragment extends Fragment implements TimePickerDialog.OnTi
         medicationListView = view.findViewById(R.id.medication_list);
         clockView = view.findViewById(R.id.clock);
         takePillsView = view.findViewById(R.id.takePills);
+        unsubscribeButton = view.findViewById(R.id.unsubscribe);
+        unsubscribeButton.setVisibility(View.GONE);
+        unsubscribeButton.setOnClickListener(view1 -> Toast.makeText(getActivity(), "bla bla bla", Toast.LENGTH_SHORT).show());
+        currentTreatmentView.setOnClickListener(view1 -> unsubscribeButton.setVisibility(View.VISIBLE));
 
         if (currentTreatment != null) {
             currentTreatmentView.setText(currentTreatment.getName());
@@ -83,6 +87,7 @@ public class DashboardFragment extends Fragment implements TimePickerDialog.OnTi
 //            alarmButton.setVisibility(View.GONE);
 //            cancelAlarmButton.setVisibility(View.GONE);
         }
+
 
 //        currentTreatmentView = view.findViewById(R.id.currentTreatment);
 //        periodDoseView = view.findViewById(R.id.periodDoseValues);
@@ -151,9 +156,6 @@ public class DashboardFragment extends Fragment implements TimePickerDialog.OnTi
         this.currentTreatment = currentTreatment;
     }
 
-    public void unsubscribe(View view) {
-    }
-
     /*public void startAlarm(View view){
         AlarmManager manager = (AlarmManager)getContext().getSystemService(Context.ALARM_SERVICE);
         Intent intent;
@@ -168,6 +170,10 @@ public class DashboardFragment extends Fragment implements TimePickerDialog.OnTi
     public void sendOnChannel() {
         NotificationCompat.Builder nb = mNotificationHelper.getChannelNotification();
         mNotificationHelper.getManager().notify(1, nb.build());
+    }
+
+    public void showUnsubscribe(View view) {
+
     }
 
     @Override

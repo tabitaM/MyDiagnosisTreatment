@@ -79,12 +79,14 @@
 
         <Button
             android:id="@+id/subscribe"
+            style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorAccent"
             android:onClick="subscribe"
             android:text="@string/diagnosis_details_subscribe"
             android:textColor="@color/colorText" />
+
     </RelativeLayout>
 
 </RelativeLayout>
