@@ -1,22 +1,12 @@
 package com.tabita.mydiagnosistreatment;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -29,10 +19,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.tabita.mydiagnosistreatment.model.Diagnosis;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
-public class ClientActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener{
+public class ClientActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
 
     private DashboardFragment dashboardFragment;
     private DiagnosisFragment diagnosisFragment;
@@ -88,7 +77,7 @@ public class ClientActivity extends AppCompatActivity implements TimePickerDialo
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        Toast.makeText(ClientActivity.this,"Alarm set to "+ hourOfDay + ":" + minute, Toast.LENGTH_LONG).show();
+        Toast.makeText(ClientActivity.this, "Alarm set to " + hourOfDay + ":" + minute, Toast.LENGTH_LONG).show();
     }
 
     private void getDiagnosisListFromFirebase() {
@@ -114,13 +103,15 @@ public class ClientActivity extends AppCompatActivity implements TimePickerDialo
 
     public void setCurrentTreatment(Diagnosis diagnosis) {
 
+        // Set current treatment for ClientActivity and DashboardFragment
         currentTreatment = diagnosis;
         dashboardFragment.setCurrentTreatment(diagnosis);
 
-        //
-         pastTreatmentList.add(diagnosis);
-         pastTreatmentsFragment.setPastTreatmentList(pastTreatmentList);
+        // Add item to past treatment fragment
+        pastTreatmentList.add(diagnosis);
+        pastTreatmentsFragment.setPastTreatmentList(pastTreatmentList);
 
+        // Highlight dashboardFragment
         setFragment(dashboardFragment);
         navigation.setSelectedItemId(R.id.navigation_dashboard);
     }

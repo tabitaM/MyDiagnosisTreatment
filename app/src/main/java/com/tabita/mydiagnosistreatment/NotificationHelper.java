@@ -42,6 +42,6 @@ public class NotificationHelper extends ContextWrapper {
 
     public NotificationCompat.Builder getChannelNotification(){
         return new NotificationCompat.Builder(getApplicationContext(), channelID)
-                .setSmallIcon(R.drawable.ic_access_alarm_black_24dp);
+                .setSmallIcon(R.drawable.ic_clock);
     }
 }

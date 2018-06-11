@@ -13,17 +13,6 @@
         android:text="@string/diagnosis_details_name"
         android:textSize="40sp" />
 
-    <Button
-        android:id="@+id/subscribe"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/name"
-        android:layout_alignEnd="@+id/medication_delimiter"
-        android:background="@color/colorAccent"
-        android:onClick="subscribe"
-        android:text="@string/diagnosis_details_subscribe"
-        android:textColor="@color/colorText" />
-
     <TextView
         android:id="@+id/period"
         android:layout_width="wrap_content"
@@ -46,15 +35,14 @@
         android:layout_height="0.5dp"
         android:layout_below="@id/medication_text"
         android:layout_marginBottom="5sp"
-        android:layout_marginEnd="20sp"
-        android:background="#294860" />
+        android:background="@color/colorAccent" />
 
     <ListView
         android:id="@+id/medication_list"
         android:layout_width="wrap_content"
-        android:layout_height="250sp"
+        android:layout_height="150sp"
         android:layout_below="@id/medication_delimiter"
-        android:layout_marginEnd="20sp"
+        android:layout_marginEnd="10sp"
         android:layout_marginStart="10sp"
         android:textSize="20sp" />
 
@@ -73,8 +61,7 @@
         android:layout_height="0.5dp"
         android:layout_below="@id/notes_text"
         android:layout_marginBottom="5sp"
-        android:layout_marginEnd="20sp"
-        android:background="#294860" />
+        android:background="@color/colorAccent" />
 
     <TextView
         android:id="@+id/notes"
@@ -84,5 +71,20 @@
         android:layout_marginEnd="20sp"
         android:layout_marginStart="10sp"
         android:text="@string/diagnosis_details_notes" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom">
+
+        <Button
+            android:id="@+id/subscribe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorAccent"
+            android:onClick="subscribe"
+            android:text="@string/diagnosis_details_subscribe"
+            android:textColor="@color/colorText" />
+    </RelativeLayout>
 
 </RelativeLayout>

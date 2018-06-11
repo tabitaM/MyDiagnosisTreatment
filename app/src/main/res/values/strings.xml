@@ -29,12 +29,13 @@
     <string name="diagnosis_details_notes">Note details</string>
     <string name="diagnosis_details_period">2 weeks</string>
     <string name="diagnosis_details_name">Fever</string>
+    <string name="diagnosis_details_subscribe">subscribe</string>
+    <string name="diagnosis_details_unsubscribe">unsubscribe</string>
 
     <string name="dashboard_fragment">Dashboard fragment</string>
     <string name="diagnosis_fragment">Diagnosis fragment</string>
+    <string name="dashboard_no_treatment">No Current Treatment</string>
     <string name="past_treatments_fragment">Past treatments fragment</string>
     <string name="past_treatments_text">Past Treatments</string>
-    <string name="dashboard_current_treatment_text">No Current Treatment</string>
-    <string name="diagnosis_details_subscribe">subscribe</string>
-    <string name="diagnosis_details_unsubscribe">unsubscribe</string>
+    <string name="dashboard_clock">clock</string>
 </resources>

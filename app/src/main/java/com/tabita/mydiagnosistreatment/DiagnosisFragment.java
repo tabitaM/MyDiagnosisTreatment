@@ -4,15 +4,12 @@ package com.tabita.mydiagnosistreatment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SearchView;
 
@@ -21,7 +18,6 @@ import com.tabita.mydiagnosistreatment.model.Diagnosis;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.zip.Inflater;
 
 
 /**
@@ -48,7 +44,7 @@ public class DiagnosisFragment extends Fragment {
         searchBox.setQueryHint("Search...");
 
         //Populate diagnosisList list with diagnosis names
-        adapter = new ArrayAdapter<>(getActivity(),android.R.layout.simple_list_item_1,diagnosisList);
+        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, diagnosisList);
         diagnosisListView.setAdapter(adapter);
 
         diagnosisListView.setAdapter(
@@ -57,6 +53,7 @@ public class DiagnosisFragment extends Fragment {
                         diagnosisList.stream().map(Diagnosis::getName).collect(Collectors.toList())));
 
         diagnosisListView.setOnItemClickListener((parent, listView, position, id) -> {
+
             String diagnosisName = parent.getItemAtPosition(position).toString();
             for (Diagnosis cursor : diagnosisList) {
                 if (cursor.getName().equals(diagnosisName)) {
@@ -65,12 +62,9 @@ public class DiagnosisFragment extends Fragment {
                     Intent intent = new Intent(getActivity(), DiagnosisDetails.class);
                     intent.putExtra(KEY, cursor);
                     startActivityForResult(intent, PICK_CONTACT_REQUEST);
-
                 }
             }
         });
-
-
 
         searchBox.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -82,8 +76,8 @@ public class DiagnosisFragment extends Fragment {
             public boolean onQueryTextChange(String s) {
                 adapter.getFilter().filter(s);
                 //for (Diagnosis item:diagnosisList){
-                    //if(item.getName().equals(s))
-                        //diagnosisList.remove(item);
+                //if(item.getName().equals(s))
+                //diagnosisList.remove(item);
                 //}
                 //adapter.notifyDataSetChanged();
                 return false;
@@ -118,21 +112,21 @@ public class DiagnosisFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_CONTACT_REQUEST) {
-            if (resultCode == DiagnosisDetails.RESULT_OK) {
-                ClientActivity clientActivity = (ClientActivity) getActivity();
-                clientActivity.setCurrentTreatment((Diagnosis) data.getSerializableExtra(KEY));
-            }
+        if (requestCode == PICK_CONTACT_REQUEST && resultCode == DiagnosisDetails.RESULT_OK) {
+            ClientActivity clientActivity = (ClientActivity) getActivity();
+            if (clientActivity == null) return;
+            clientActivity.setCurrentTreatment((Diagnosis) data.getSerializableExtra(KEY));
         }
     }
+
 
     public void setDiagnosisList(List<Diagnosis> diagnosisList) {
         this.diagnosisList = diagnosisList;
     }
 
-    public void searchItem(String textToSearch){
-        for(Diagnosis item:diagnosisList){
-            if(item.getName().equals(textToSearch)){
+    public void searchItem(String textToSearch) {
+        for (Diagnosis item : diagnosisList) {
+            if (item.getName().equals(textToSearch)) {
                 diagnosisList.remove(item);
             }
         }
