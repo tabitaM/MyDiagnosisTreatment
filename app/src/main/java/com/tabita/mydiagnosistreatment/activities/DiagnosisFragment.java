@@ -1,6 +1,7 @@
 package com.tabita.mydiagnosistreatment.activities;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,9 +10,11 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.SearchView;
 
 import com.tabita.mydiagnosistreatment.R;
 import com.tabita.mydiagnosistreatment.model.Diagnosis;
@@ -32,6 +35,8 @@ public class DiagnosisFragment extends Fragment {
 
     private List<Diagnosis> diagnosisList = new ArrayList<>();
 
+    private ListView diagnosisListView;
+
     public DiagnosisFragment() {
         // Required empty public constructor
     }
@@ -40,47 +45,53 @@ public class DiagnosisFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         View view = inflater.inflate(R.layout.fragment_diagnosis, container, false);
-        ListView diagnosisListView = view.findViewById(R.id.diagnosis);
-        SearchView searchBox = view.findViewById(R.id.search);
-        searchBox.setQueryHint("Search...");
+        diagnosisListView = view.findViewById(R.id.diagnosis);
+        EditText searchView = view.findViewById(R.id.search_input);
+        Button searchButton = view.findViewById(R.id.search_submit_button);
 
-        //Populate diagnosisList list with diagnosis names
-        diagnosisListView.setAdapter(
-                new ArrayAdapter<>(Objects.requireNonNull(getActivity()),
-                        android.R.layout.simple_list_item_1,
-                        diagnosisList.stream().map(Diagnosis::getName).collect(Collectors.toList())));
+        searchButton.setOnClickListener(v -> {
 
-        diagnosisListView.setOnItemClickListener((parent, listView, position, id) -> {
+            // hide keyboard
+            InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity()).getSystemService(Context.INPUT_METHOD_SERVICE);
+            Objects.requireNonNull(imm).hideSoftInputFromWindow(view.getWindowToken(), 0);
 
-            String diagnosisName = parent.getItemAtPosition(position).toString();
-            for (Diagnosis cursor : diagnosisList) {
-                if (cursor.getName().equals(diagnosisName)) {
+            // validate input
+            String searchText = searchView.getText().toString();
+            if (TextUtils.isEmpty(searchText)) {
+                searchView.setError(getString(R.string.error_input_symptoms));
+                searchView.requestFocus();
+                return;
+            }
 
-                    // Start DiagnosisDetailsActivity Activity
-                    Intent intent = new Intent(getActivity(), DiagnosisDetailsActivity.class);
-                    intent.putExtra(KEY, cursor);
-                    startActivityForResult(intent, PICK_CONTACT_REQUEST);
+            // filter list
+            List<Diagnosis> filteredDiagnosisList = new ArrayList<>();
+            for (Diagnosis diagnosis : diagnosisList) {
+                for (String keyword : diagnosis.getKeywords()) {
+                    if (keyword.equals(searchText)) {
+                        filteredDiagnosisList.add(diagnosis);
+                    }
                 }
             }
-        });
 
-        diagnosisListView.setTextFilterEnabled(true);
+            // populate list
+            diagnosisListView.setAdapter(
+                    new ArrayAdapter<>(Objects.requireNonNull(getActivity()),
+                            android.R.layout.simple_list_item_1,
+                            filteredDiagnosisList.stream().map(Diagnosis::getName).collect(Collectors.toList())));
 
-        searchBox.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String s) {
-                return false;
-            }
+            diagnosisListView.setOnItemClickListener((parent, listView, position, id) -> {
 
-            @Override
-            public boolean onQueryTextChange(String s) {
-                if (TextUtils.isEmpty(s)) {
-                    diagnosisListView.clearTextFilter();
-                } else {
-                    diagnosisListView.setFilterText(s);
+                String diagnosisName = parent.getItemAtPosition(position).toString();
+                for (Diagnosis cursor : filteredDiagnosisList) {
+                    if (cursor.getName().equals(diagnosisName)) {
+
+                        // Start DiagnosisDetailsActivity Activity
+                        Intent intent = new Intent(getActivity(), DiagnosisDetailsActivity.class);
+                        intent.putExtra(KEY, cursor);
+                        startActivityForResult(intent, PICK_CONTACT_REQUEST);
+                    }
                 }
-                return true;
-            }
+            });
         });
 
         return view;

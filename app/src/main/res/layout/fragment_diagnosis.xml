@@ -3,19 +3,48 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="10sp"
     tools:context=".activities.DiagnosisFragment">
 
-    <SearchView
+    <ImageView
         android:id="@+id/search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableStart="@drawable/ic_search_black_24dp" />
+        android:layout_below="@id/medication_list"
+        android:layout_marginTop="20sp"
+        android:contentDescription="@string/dashboard_clock"
+        android:src="@drawable/ic_search" />
+
+
+    <EditText
+        android:id="@+id/search_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/search"
+        android:hint="@string/prompt_symptoms"
+        android:imeActionId="6"
+        android:imeActionLabel="@string/action_search"
+        android:imeOptions="actionUnspecified"
+        android:inputType="text"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textColorHint="@color/colorGray" />
+
+    <Button
+        android:id="@+id/search_submit_button"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/search_input"
+        android:layout_marginTop="16dp"
+        android:text="@string/action_search"
+        android:textStyle="bold" />
 
     <ListView
         android:id="@+id/diagnosis"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/search"
+        android:layout_below="@id/search_submit_button"
         android:divider="#000000"
         android:dividerHeight="1dp" />
 
