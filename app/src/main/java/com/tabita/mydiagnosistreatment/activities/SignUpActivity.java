@@ -1,4 +1,4 @@
-package com.tabita.mydiagnosistreatment;
+package com.tabita.mydiagnosistreatment.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.tabita.mydiagnosistreatment.R;
 
 public class SignUpActivity extends AppCompatActivity {
 

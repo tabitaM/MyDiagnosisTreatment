@@ -3,14 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DiagnosisFragment">
+    tools:context=".activities.DiagnosisFragment">
 
     <SearchView
         android:id="@+id/search"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:drawableLeft="@drawable/ic_search_black_24dp"
-        android:voiceSearchMode="showVoiceSearchButton|launchRecognizer"/>
+        android:layout_height="wrap_content"
+        android:drawableStart="@drawable/ic_search_black_24dp" />
 
     <ListView
         android:id="@+id/diagnosis"

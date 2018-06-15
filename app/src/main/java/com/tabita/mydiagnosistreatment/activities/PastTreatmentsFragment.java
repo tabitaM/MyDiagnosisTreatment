@@ -1,4 +1,4 @@
-package com.tabita.mydiagnosistreatment;
+package com.tabita.mydiagnosistreatment.activities;
 
 
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.tabita.mydiagnosistreatment.R;
 import com.tabita.mydiagnosistreatment.model.Diagnosis;
 
 import java.util.ArrayList;

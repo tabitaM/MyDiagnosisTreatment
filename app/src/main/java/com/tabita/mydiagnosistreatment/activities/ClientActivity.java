@@ -1,4 +1,4 @@
-package com.tabita.mydiagnosistreatment;
+package com.tabita.mydiagnosistreatment.activities;
 
 import android.app.TimePickerDialog;
 import android.os.Bundle;
@@ -16,6 +16,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.tabita.mydiagnosistreatment.R;
 import com.tabita.mydiagnosistreatment.model.Diagnosis;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.tabita.mydiagnosistreatment;
+package com.tabita.mydiagnosistreatment.activities;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -20,6 +20,10 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.tabita.mydiagnosistreatment.AlertReceiver;
+import com.tabita.mydiagnosistreatment.utils.MedicationAdapter;
+import com.tabita.mydiagnosistreatment.NotificationHelper;
+import com.tabita.mydiagnosistreatment.R;
 import com.tabita.mydiagnosistreatment.model.Diagnosis;
 import com.tabita.mydiagnosistreatment.model.Medication;
 

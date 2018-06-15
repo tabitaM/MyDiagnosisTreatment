@@ -1,4 +1,4 @@
-package com.tabita.mydiagnosistreatment;
+package com.tabita.mydiagnosistreatment.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,14 +9,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tabita.mydiagnosistreatment.utils.MedicationAdapter;
+import com.tabita.mydiagnosistreatment.R;
 import com.tabita.mydiagnosistreatment.model.Diagnosis;
 import com.tabita.mydiagnosistreatment.model.Medication;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class DiagnosisDetails extends AppCompatActivity {
+public class DiagnosisDetailsActivity extends AppCompatActivity {
 
     private TextView diagnosisNameView;
     private TextView diagnosisPeriodView;
@@ -89,7 +90,7 @@ public class DiagnosisDetails extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == DiagnosisFragment.PICK_CONTACT_REQUEST) {
-            if (resultCode == DiagnosisDetails.RESULT_OK) {
+            if (resultCode == DiagnosisDetailsActivity.RESULT_OK) {
                 ClientActivity clientActivity = (ClientActivity) getBaseContext();
                 clientActivity.setCurrentTreatment((Diagnosis) data.getSerializableExtra(DiagnosisFragment.KEY));
             }
