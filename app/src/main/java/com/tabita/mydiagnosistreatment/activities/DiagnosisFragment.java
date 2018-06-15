@@ -103,7 +103,7 @@ public class DiagnosisFragment extends Fragment {
         if (requestCode == PICK_CONTACT_REQUEST && resultCode == DiagnosisDetailsActivity.RESULT_OK) {
             ClientActivity clientActivity = (ClientActivity) getActivity();
             if (clientActivity == null) return;
-            clientActivity.setCurrentTreatment((Diagnosis) data.getSerializableExtra(KEY));
+            clientActivity.setTreatment((Diagnosis) data.getSerializableExtra(KEY));
         }
     }
 

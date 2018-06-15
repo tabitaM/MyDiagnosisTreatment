@@ -1,14 +1,8 @@
 package com.tabita.mydiagnosistreatment.activities;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.app.TimePickerDialog;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.NotificationCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,25 +11,21 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.TimePicker;
-import android.widget.Toast;
 
-import com.tabita.mydiagnosistreatment.AlertReceiver;
-import com.tabita.mydiagnosistreatment.utils.MedicationAdapter;
 import com.tabita.mydiagnosistreatment.NotificationHelper;
 import com.tabita.mydiagnosistreatment.R;
 import com.tabita.mydiagnosistreatment.model.Diagnosis;
 import com.tabita.mydiagnosistreatment.model.Medication;
+import com.tabita.mydiagnosistreatment.utils.MedicationAdapter;
 
 import java.text.DateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DashboardFragment extends Fragment implements TimePickerDialog.OnTimeSetListener {
+public class DashboardFragment extends Fragment {
 
     public Diagnosis currentTreatment;
     private TextView currentTreatmentView;
@@ -73,25 +63,25 @@ public class DashboardFragment extends Fragment implements TimePickerDialog.OnTi
         takePillsView = view.findViewById(R.id.takePills);
         unsubscribeButton = view.findViewById(R.id.unsubscribe);
         unsubscribeButton.setVisibility(View.GONE);
-        unsubscribeButton.setOnClickListener(view1 -> Toast.makeText(getActivity(), "bla bla bla", Toast.LENGTH_SHORT).show());
+        unsubscribeButton.setOnClickListener(view1 -> {
+            currentTreatment = null;
+            ClientActivity clientActivity = (ClientActivity) getActivity();
+            if (clientActivity == null) return;
+            clientActivity.setTreatment(null);
+            hideDash();
+        });
         currentTreatmentView.setOnClickListener(view1 -> unsubscribeButton.setVisibility(View.VISIBLE));
 
         if (currentTreatment != null) {
-            currentTreatmentView.setText(currentTreatment.getName());
-            periodView.setText(currentTreatment.getTreatment().getPeriod());
-            List<Medication> medicationList = currentTreatment.getTreatment().getMedication();
-            medicationListView.setAdapter(new MedicationAdapter(getActivity(), medicationList));
+            showDash();
         } else {
-            currentTreatmentView.setText(R.string.dashboard_no_treatment);
-            periodView.setVisibility(View.GONE);
-            clockView.setVisibility(View.GONE);
-            takePillsView.setVisibility(View.GONE);
+            hideDash();
+        }
+
 //            unsubscribeButton.setVisibility(View.GONE);
 //            medicationDelimiter.setVisibility(View.GONE);
 //            alarmButton.setVisibility(View.GONE);
 //            cancelAlarmButton.setVisibility(View.GONE);
-        }
-
 
 //        currentTreatmentView = view.findViewById(R.id.currentTreatment);
 //        periodDoseView = view.findViewById(R.id.periodDoseValues);
@@ -150,6 +140,21 @@ public class DashboardFragment extends Fragment implements TimePickerDialog.OnTi
         return view;
     }
 
+    private void showDash() {
+        currentTreatmentView.setText(currentTreatment.getName());
+        periodView.setText(currentTreatment.getTreatment().getPeriod());
+        List<Medication> medicationList = currentTreatment.getTreatment().getMedication();
+        medicationListView.setAdapter(new MedicationAdapter(getActivity(), medicationList));
+    }
+
+    private void hideDash() {
+        currentTreatmentView.setText(R.string.dashboard_no_treatment);
+        periodView.setVisibility(View.GONE);
+        clockView.setVisibility(View.GONE);
+        takePillsView.setVisibility(View.GONE);
+        medicationListView.setAdapter(null);
+    }
+
     /*@Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         TextView text = view.findViewById(R.id.text_view);
@@ -171,40 +176,36 @@ public class DashboardFragment extends Fragment implements TimePickerDialog.OnTi
         manager.setRepeating(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime()+3000,3000,pendingIntent);
     }*/
 
-    public void sendOnChannel() {
-        NotificationCompat.Builder nb = mNotificationHelper.getChannelNotification();
-        mNotificationHelper.getManager().notify(1, nb.build());
-    }
+//    public void sendOnChannel() {
+//        NotificationCompat.Builder nb = mNotificationHelper.getChannelNotification();
+//        mNotificationHelper.getManager().notify(1, nb.build());
+//    }
 
-    public void showUnsubscribe(View view) {
+//    @Override
+//    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+//        //Toast.makeText(ClientActivity.this,"Alarm set to "+ hourOfDay + ":" + minute, Toast.LENGTH_LONG).show();
+//        Calendar c = Calendar.getInstance();
+//        c.set(Calendar.HOUR_OF_DAY, hourOfDay);
+//        c.set(Calendar.MINUTE, minute);
+//        c.set(Calendar.SECOND, 0);
+//
+//        startAlarm(c);
+//    }
 
-    }
-
-    @Override
-    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        //Toast.makeText(ClientActivity.this,"Alarm set to "+ hourOfDay + ":" + minute, Toast.LENGTH_LONG).show();
-        Calendar c = Calendar.getInstance();
-        c.set(Calendar.HOUR_OF_DAY, hourOfDay);
-        c.set(Calendar.MINUTE, minute);
-        c.set(Calendar.SECOND, 0);
-
-        startAlarm(c);
-    }
-
-    public void startAlarm(Calendar c) {
-        AlarmManager alarmManager = (AlarmManager) (getContext().getSystemService(Context.ALARM_SERVICE));
-        Intent intent = new Intent(getContext(), AlertReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 1, intent, 0);
-
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
-    }
-
-    private void cancelAlarm() {
-        AlarmManager alarmManager = (AlarmManager) (getContext().getSystemService(Context.ALARM_SERVICE));
-        Intent intent = new Intent(getContext(), AlertReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 1, intent, 0);
-
-        alarmManager.cancel(pendingIntent);
-        Toast.makeText(getContext(), "Alarm canceled.", Toast.LENGTH_LONG).show();
-    }
+//    public void startAlarm(Calendar c) {
+//        AlarmManager alarmManager = (AlarmManager) (getContext().getSystemService(Context.ALARM_SERVICE));
+//        Intent intent = new Intent(getContext(), AlertReceiver.class);
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 1, intent, 0);
+//
+//        alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+//    }
+//
+//    private void cancelAlarm() {
+//        AlarmManager alarmManager = (AlarmManager) (getContext().getSystemService(Context.ALARM_SERVICE));
+//        Intent intent = new Intent(getContext(), AlertReceiver.class);
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 1, intent, 0);
+//
+//        alarmManager.cancel(pendingIntent);
+//        Toast.makeText(getContext(), "Alarm canceled.", Toast.LENGTH_LONG).show();
+//    }
 }

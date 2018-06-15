@@ -9,10 +9,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tabita.mydiagnosistreatment.utils.MedicationAdapter;
 import com.tabita.mydiagnosistreatment.R;
 import com.tabita.mydiagnosistreatment.model.Diagnosis;
 import com.tabita.mydiagnosistreatment.model.Medication;
+import com.tabita.mydiagnosistreatment.utils.MedicationAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,16 +54,6 @@ public class DiagnosisDetailsActivity extends AppCompatActivity {
         notesView = findViewById(R.id.notes);
         notesView.setText((diagnosis.getTreatment().getNotes()));
 
-        /*//Populate diagnosisList list with diagnosis names
-        diagnosisListView = findViewById(R.id.medication_list_dashboardFragment);
-        adapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1,diagnosisList);
-        //diagnosisListView.setAdapter(adapter);
-        diagnosisListView.setAdapter(adapter);
-
-        diagnosisListView.setAdapter(
-                new ArrayAdapter<>(this,
-                        android.R.layout.simple_list_item_1,
-                        diagnosisList.stream().map(Diagnosis::getName).collect(Collectors.toList())));*/
     }
 
     public void subscribe(View view) {
@@ -71,29 +61,9 @@ public class DiagnosisDetailsActivity extends AppCompatActivity {
         intent.putExtra(DiagnosisFragment.KEY, diagnosis);
         setResult(RESULT_OK, intent); //setResult returns data back to its parent
 
-     /*   for (Diagnosis cursor : diagnosisList) {
-            if (cursor.getName().equals(diagnosisNameView.toString())) {
-
-                Intent intent = new Intent(this, DashboardFragment.class);
-                intent.putExtra(DiagnosisFragment.KEY, cursor);
-                setResult(RESULT_OK, intent);
-
-            }
-        }*/
-
         Toast.makeText(this, "You are now subscribed to " + diagnosis.getName() + " treatment", Toast.LENGTH_SHORT).show();
 
         finish();
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == DiagnosisFragment.PICK_CONTACT_REQUEST) {
-            if (resultCode == DiagnosisDetailsActivity.RESULT_OK) {
-                ClientActivity clientActivity = (ClientActivity) getBaseContext();
-                clientActivity.setCurrentTreatment((Diagnosis) data.getSerializableExtra(DiagnosisFragment.KEY));
-            }
-        }
-    }
 }

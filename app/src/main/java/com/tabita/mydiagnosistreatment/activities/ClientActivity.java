@@ -102,10 +102,10 @@ public class ClientActivity extends AppCompatActivity implements TimePickerDialo
         });
     }
 
-    public void setCurrentTreatment(Diagnosis diagnosis) {
+    public void setTreatment(Diagnosis diagnosis) {
 
         // Set current treatment for ClientActivity and DashboardFragment
-        currentTreatment = diagnosis;
+        setCurrentTreatment(diagnosis);
         dashboardFragment.setCurrentTreatment(diagnosis);
 
         // Add item to past treatment fragment
@@ -115,6 +115,10 @@ public class ClientActivity extends AppCompatActivity implements TimePickerDialo
         // Highlight dashboardFragment
         setFragment(dashboardFragment);
         navigation.setSelectedItemId(R.id.navigation_dashboard);
+    }
+
+    public void setCurrentTreatment(Diagnosis diagnosis) {
+        currentTreatment = diagnosis;
     }
 
     private void setFragment(Fragment fragment) {
