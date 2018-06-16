@@ -43,7 +43,7 @@
     <ListView
         android:id="@+id/diagnosis"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="300sp"
         android:layout_below="@id/search_submit_button"
         android:divider="#000000"
         android:dividerHeight="1dp" />

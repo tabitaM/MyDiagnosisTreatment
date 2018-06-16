@@ -20,8 +20,10 @@ import com.tabita.mydiagnosistreatment.R;
 import com.tabita.mydiagnosistreatment.model.Diagnosis;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -64,10 +66,10 @@ public class DiagnosisFragment extends Fragment {
             }
 
             // filter list
-            List<Diagnosis> filteredDiagnosisList = new ArrayList<>();
+            Set<Diagnosis> filteredDiagnosisList = new HashSet<>();
             for (Diagnosis diagnosis : diagnosisList) {
                 for (String keyword : diagnosis.getKeywords()) {
-                    if (keyword.equals(searchText)) {
+                    if (keyword.contains(searchText)) {
                         filteredDiagnosisList.add(diagnosis);
                     }
                 }
