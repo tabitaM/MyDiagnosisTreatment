@@ -1,14 +1,13 @@
 package com.tabita.mydiagnosistreatment.activities;
 
-import android.app.TimePickerDialog;
+import android.bluetooth.BluetoothAdapter;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.TimePicker;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -22,7 +21,7 @@ import com.tabita.mydiagnosistreatment.model.Diagnosis;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClientActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
+public class ClientActivity extends AppCompatActivity {
 
     private DashboardFragment dashboardFragment;
     private DiagnosisFragment diagnosisFragment;
@@ -32,18 +31,13 @@ public class ClientActivity extends AppCompatActivity implements TimePickerDialo
     private Diagnosis currentTreatment;
     private List<Diagnosis> diagnosisList = new ArrayList<>();
     private List<Diagnosis> pastTreatmentList = new ArrayList<>();
-    /*private EditText editTextTitle;
-    private Button sendOnChannel;
-    private NotificationHelper mNotificationHelper;*/
+
+    private static String deviceName = BluetoothAdapter.getDefaultAdapter().getName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client);
-
-        /*editTextTitle = findViewById(R.id.edit_text_title);
-        sendOnChannel = findViewById(R.id.send_on_channel);
-        mNotificationHelper = new NotificationHelper(this);*/
 
         navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(item -> {
@@ -66,51 +60,95 @@ public class ClientActivity extends AppCompatActivity implements TimePickerDialo
         pastTreatmentsFragment = new PastTreatmentsFragment();
 
         setFragment(dashboardFragment);
-        getDiagnosisListFromFirebase();
+        getDataFromFirebase();
 
-        /*sendOnChannel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sendOnChannel(editTextTitle.getText().toString());
-            }
-        });*/
     }
 
-    @Override
-    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        Toast.makeText(ClientActivity.this, "Alarm set to " + hourOfDay + ":" + minute, Toast.LENGTH_LONG).show();
-    }
+    private void getDataFromFirebase() {
 
-    private void getDiagnosisListFromFirebase() {
-        final DatabaseReference myRef = FirebaseDatabase.getInstance().getReference().child("diagnosis");
-        myRef.addValueEventListener(new ValueEventListener() {
+        // Diagnosis List
+        final DatabaseReference myRefDiagnosis = FirebaseDatabase.getInstance().getReference().child("diagnosis");
+        myRefDiagnosis.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     Diagnosis diagnosis = postSnapshot.getValue(Diagnosis.class);
-                    diagnosisList.add(diagnosis);
+                    if (diagnosis != null) {
+                        diagnosisList.add(diagnosis);
+                    }
                 }
 
                 diagnosisFragment.setDiagnosisList(diagnosisList);
             }
 
             @Override
-            public void onCancelled(DatabaseError error) {
+            public void onCancelled(@NonNull DatabaseError error) {
                 // Failed to read value
                 Log.w("ERROR", "Failed to read values diagnosis from firebase.", error.toException());
             }
         });
+
+        // User diagnosis
+        final DatabaseReference myRefUserDiagnosis = FirebaseDatabase.getInstance().getReference().child("users");
+        myRefUserDiagnosis.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Diagnosis userDiagnosis = dataSnapshot.child(deviceName).child("diagnosis").getValue(Diagnosis.class);
+                if (userDiagnosis != null) {
+                    setTreatment(userDiagnosis);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Failed to read value
+                Log.w("ERROR", "Failed to read values diagnosis from firebase.", error.toException());
+            }
+        });
+
+        // User PastTreatments
+//        final DatabaseReference myRefUserPastTreatments = FirebaseDatabase.getInstance().getReference().child("users");
+//        myRefUserPastTreatments.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                for (DataSnapshot postSnapshot : dataSnapshot.child(deviceName).child("pastTreatments").getChildren()) {
+//                    Diagnosis pastDiagnosis = postSnapshot.getValue(Diagnosis.class);
+//                    if (pastDiagnosis != null && !pastTreatmentList.contains(pastDiagnosis)) {
+//                        pastTreatmentList.add(pastDiagnosis);
+//                        // Add item to past treatment fragment
+//                        pastTreatmentsFragment.setPastTreatmentList(pastTreatmentList);
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//                // Failed to read value
+//                Log.w("ERROR", "Failed to read values diagnosis from firebase.", error.toException());
+//            }
+//        });
     }
+
+    private void setUserDiagnosisToFirebase() {
+        // Add UserDiagnosis to firebase
+        DatabaseReference myRefUserDiagnosis = FirebaseDatabase.getInstance().getReference().child("users");
+        myRefUserDiagnosis.child(deviceName).child("diagnosis").setValue(currentTreatment);
+
+    }
+
+//    private void setPastTreatmentsToFirebase() {
+//        // Add PastTreatments diagnosis to firebase
+//        DatabaseReference myRefPastTreatments = FirebaseDatabase.getInstance().getReference().child("users");
+//        myRefPastTreatments.child(deviceName).child("pastTreatments").setValue(pastTreatmentList);
+//    }
+
 
     public void setTreatment(Diagnosis diagnosis) {
 
-        // Set current treatment for ClientActivity and DashboardFragment
+        // Set current treatment for ClientActivity and DashboardFragment and Firebase
         setCurrentTreatment(diagnosis);
         dashboardFragment.setCurrentTreatment(diagnosis);
-
-        // Add item to past treatment fragment
-        pastTreatmentList.add(diagnosis);
-        pastTreatmentsFragment.setPastTreatmentList(pastTreatmentList);
+        setUserDiagnosisToFirebase();
 
         // Highlight dashboardFragment
         setFragment(dashboardFragment);
@@ -119,6 +157,13 @@ public class ClientActivity extends AppCompatActivity implements TimePickerDialo
 
     public void setCurrentTreatment(Diagnosis diagnosis) {
         currentTreatment = diagnosis;
+    }
+
+    public void addPastTreatment(Diagnosis diagnosis) {
+        if (!pastTreatmentList.contains(diagnosis)) {
+            pastTreatmentList.add(diagnosis);
+//            setPastTreatmentsToFirebase();
+        }
     }
 
     private void setFragment(Fragment fragment) {
@@ -131,9 +176,4 @@ public class ClientActivity extends AppCompatActivity implements TimePickerDialo
         FirebaseAuth.getInstance().signOut();
         finish();
     }
-
-   /* public void sendOnChannel(String message){
-        NotificationCompat.Builder nb = mNotificationHelper.getChannelNotification(message);
-        mNotificationHelper.getManager().notify(1, nb.build());
-    }*/
 }

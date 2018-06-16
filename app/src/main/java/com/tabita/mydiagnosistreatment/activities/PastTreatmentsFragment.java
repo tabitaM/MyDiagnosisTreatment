@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 public class PastTreatmentsFragment extends Fragment {
 
     private List<Diagnosis> pastTreatmentList = new ArrayList<>();
-    ;
 
     public PastTreatmentsFragment() {
         // Required empty public constructor

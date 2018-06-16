@@ -41,4 +41,8 @@
     <string name="dashboard_clock">clock</string>
     <string name="prompt_symptoms">Input symptoms…</string>
     <string name="action_search">search</string>
+    <string name="dashboard_pills_to_take_1">You have</string>
+    <string name="dashboard_pills_to_take_3">left to take today</string>
+    <string name="channel_name">My Channel</string>
+    <string name="channel_description">My Channel Description</string>
 </resources>

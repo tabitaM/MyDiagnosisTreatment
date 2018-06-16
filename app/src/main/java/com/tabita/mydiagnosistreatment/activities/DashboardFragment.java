@@ -1,18 +1,20 @@
 package com.tabita.mydiagnosistreatment.activities;
 
+import android.app.Notification;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.tabita.mydiagnosistreatment.NotificationHelper;
 import com.tabita.mydiagnosistreatment.R;
 import com.tabita.mydiagnosistreatment.model.Diagnosis;
 import com.tabita.mydiagnosistreatment.model.Medication;
@@ -21,6 +23,8 @@ import com.tabita.mydiagnosistreatment.utils.MedicationAdapter;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,19 +36,14 @@ public class DashboardFragment extends Fragment {
     private TextView periodView;
     private ImageView clockView;
     private ListView medicationListView;
-    private TextView takePillsView;
     private Button unsubscribeButton;
+    private TextView takePillsView1;
+    private TextView takePillsView2;
+    private TextView takePillsView3;
 
-    private TextView periodDoseTextView;
-    private TextView medicationTextView;
-    private View medicationDelimiter;
-    private Button alarmButton;
-    private EditText editTextTitle;
-    private Button sendOnChannel;
-    private Button cancelAlarmButton;
-    private NotificationHelper mNotificationHelper;
+    NotificationCompat.Builder notificationBuilder;
 
-    TextView dateView;
+    private TextView dateView;
 
     public DashboardFragment() {
         // Required empty public constructor
@@ -53,159 +52,153 @@ public class DashboardFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
-        dateView = view.findViewById(R.id.date);
-        dateView.setText(DateFormat.getDateInstance().format(new Date()));
 
+        // get GUI references
+        dateView = view.findViewById(R.id.date);
         currentTreatmentView = view.findViewById(R.id.currentTreatment);
+        unsubscribeButton = view.findViewById(R.id.unsubscribe);
         periodView = view.findViewById(R.id.period);
         medicationListView = view.findViewById(R.id.medication_list);
         clockView = view.findViewById(R.id.clock);
-        takePillsView = view.findViewById(R.id.takePills);
-        unsubscribeButton = view.findViewById(R.id.unsubscribe);
+        takePillsView1 = view.findViewById(R.id.pills_to_take_1);
+        takePillsView2 = view.findViewById(R.id.pills_to_take_2);
+        takePillsView3 = view.findViewById(R.id.pills_to_take_3);
+
+        // Notification
+        notificationBuilder = new NotificationCompat.Builder(Objects.requireNonNull(getActivity()), "NOTIFICATION_CHANNEL")
+                .setSmallIcon(R.drawable.ic_clock)
+                .setContentTitle("It's time to take your pills")
+                .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
+                .setPriority(NotificationCompat.PRIORITY_HIGH);
+
+        // Set date
+        dateView.setText(DateFormat.getDateInstance().format(new Date()));
+
+        // Unsubscribe button
         unsubscribeButton.setVisibility(View.GONE);
         unsubscribeButton.setOnClickListener(view1 -> {
-            currentTreatment = null;
             ClientActivity clientActivity = (ClientActivity) getActivity();
-            if (clientActivity == null) return;
-            clientActivity.setTreatment(null);
-            hideDash();
-        });
-        currentTreatmentView.setOnClickListener(view1 -> unsubscribeButton.setVisibility(View.VISIBLE));
+            clientActivity.addPastTreatment(currentTreatment);
 
+            currentTreatment = null;
+            clientActivity.setCurrentTreatment(null);
+
+            hideDash();
+            unsubscribeButton.setVisibility(View.GONE);
+        });
+
+        clockView.setOnClickListener(view3 -> sendNotification());
+
+        // Current Treatment click
+        currentTreatmentView.setOnClickListener(view1 -> {
+            if (!currentTreatmentView.getText().equals(getString(R.string.dashboard_no_treatment))) {
+                unsubscribeButton.setVisibility(View.VISIBLE);
+            }
+        });
+
+        // Test notification
+        clockView.setOnClickListener(view3 -> sendNotification());
+
+        // Show/Hide dash
         if (currentTreatment != null) {
             showDash();
+            setupNotification();
         } else {
             hideDash();
         }
 
-//            unsubscribeButton.setVisibility(View.GONE);
-//            medicationDelimiter.setVisibility(View.GONE);
-//            alarmButton.setVisibility(View.GONE);
-//            cancelAlarmButton.setVisibility(View.GONE);
-
-//        currentTreatmentView = view.findViewById(R.id.currentTreatment);
-//        periodDoseView = view.findViewById(R.id.periodDoseValues);
-//        periodDoseTextView = view.findViewById(R.id.periodDoseText);
-//        medicationTextView = view.findViewById(R.id.medication_text);
-//        unsubscribeButton = view.findViewById(R.id.unsubscribe);
-//        medicationDelimiter = view.findViewById(R.id.medication_delimiter);
-//        alarmButton = view.findViewById(R.id.alarm_button);
-//        //editTextTitle = view.findViewById(R.id.edit_text_title);
-//        sendOnChannel = view.findViewById(R.id.send_on_channel);
-//        mNotificationHelper = new NotificationHelper(getContext());
-//        cancelAlarmButton = view.findViewById(R.id.button_cancel_alarm);
-
-        // Medication List to fill list from DashboardFragment
-//        List<Medication> medicationList = diagnosis.getTreatment().getMedication();
-//        medicationListView = view.findViewById(R.id.medication_list_dashboardFragment);
-//        medicationListView.setAdapter(new MedicationAdapter(getContext(), medicationList));
-
-//
-
-
-//        unsubscribeButton.setOnClickListener(this::unsubscribe);
-//        alarmButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                /*Intent intent = new Intent(getActivity(), AlarmReceiver.class);
-//                PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(),0,intent,0);
-//                AlarmManager alarmManager = (AlarmManager)getContext().getSystemService(Context.ALARM_SERVICE);
-//                alarmManager.set(AlarmManager.RTC_WAKEUP,System.currentTimeMillis()*1000,pendingIntent);*/
-//                DialogFragment timePicker = new TimePickerFragment();
-//                timePicker.show(getActivity().getFragmentManager(), "Time Picker");
-//            }
-//        });
-
-//        sendOnChannel.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                sendOnChannel();
-//            }
-//        });
-//
-//        cancelAlarmButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                cancelAlarm();
-//            }
-//        });
-//
-//        cancelAlarmButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                cancelAlarm();
-//            }
-//        });
-
         return view;
     }
 
+    private void setupNotification() {
+        Integer maxDose = Integer.parseInt(currentTreatment.getTreatment().getMedication().get(0).getDose());
+        for (Medication medication : currentTreatment.getTreatment().getMedication()) {
+            Integer dose = Integer.parseInt(medication.getDose());
+            if (maxDose < dose) {
+                maxDose = dose;
+            }
+        }
+        Toast.makeText(getActivity(), "MAX dose: " + maxDose, Toast.LENGTH_SHORT).show();
+    }
+
+    private void sendNotification() {
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(Objects.requireNonNull(getActivity()));
+        notificationManager.notify(1234, notificationBuilder.build());
+
+        // reduce number of pills to take
+        for (Medication medication : currentTreatment.getTreatment().getMedication()) {
+            String dose = medication.getDose();
+            Integer doseInt = Integer.parseInt(dose);
+            if (doseInt != 0) {
+                doseInt--;
+            }
+            medication.setDose(doseInt.toString());
+        }
+
+        // update client currentTreatment
+        ClientActivity clientActivity = (ClientActivity) getActivity();
+        clientActivity.setTreatment(currentTreatment);
+
+        // Check Medication dose are all 0 -> add to PastTreatments
+        if (checkMedicationDoseZero()) {
+            clientActivity.addPastTreatment(currentTreatment);
+        }
+
+        // refresh GUI
+        showDash();
+    }
+
+    private Boolean checkMedicationDoseZero() {
+        Boolean ok = true;
+        for (Medication medication : currentTreatment.getTreatment().getMedication()) {
+            if (Integer.parseInt(medication.getDose()) != 0) {
+                ok = false;
+            }
+        }
+
+        return ok;
+    }
+
     private void showDash() {
+
         currentTreatmentView.setText(currentTreatment.getName());
         periodView.setText(currentTreatment.getTreatment().getPeriod());
+
         List<Medication> medicationList = currentTreatment.getTreatment().getMedication();
         medicationListView.setAdapter(new MedicationAdapter(getActivity(), medicationList));
+
+        takePillsView1.setVisibility(View.VISIBLE);
+        takePillsView2.setText(constructTakePillsText(medicationList));
+        takePillsView3.setVisibility(View.VISIBLE);
+
+        String meds = currentTreatment.getTreatment().getMedication().stream().map(Medication::getName).collect(Collectors.toList()).toString();
+        notificationBuilder.setContentText(meds);
     }
 
     private void hideDash() {
         currentTreatmentView.setText(R.string.dashboard_no_treatment);
         periodView.setVisibility(View.GONE);
         clockView.setVisibility(View.GONE);
-        takePillsView.setVisibility(View.GONE);
+        takePillsView1.setVisibility(View.GONE);
+        takePillsView2.setVisibility(View.GONE);
+        takePillsView3.setVisibility(View.GONE);
         medicationListView.setAdapter(null);
     }
 
-    /*@Override
-    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        TextView text = view.findViewById(R.id.text_view);
-        text.setText("Hour: "+ hourOfDay + "Minute: " + minute);
-    }*/
+    private String constructTakePillsText(List<Medication> medicationList) {
+        StringBuilder text = new StringBuilder();
+        for (int i = 0; i < medicationList.size(); i++) {
+            text.append(medicationList.get(i).getDose()).append(" pills of ").append(medicationList.get(i).getName());
+            if (i != medicationList.size() - 1) {
+                text.append("\n");
+            }
+        }
+
+        return text.toString();
+    }
 
     public void setCurrentTreatment(Diagnosis currentTreatment) {
         this.currentTreatment = currentTreatment;
     }
 
-    /*public void startAlarm(View view){
-        AlarmManager manager = (AlarmManager)getContext().getSystemService(Context.ALARM_SERVICE);
-        Intent intent;
-        PendingIntent pendingIntent;
-
-        intent = new Intent(getActivity(), AlarmNotificationReceiver.class);
-        pendingIntent = PendingIntent.getBroadcast(getContext(), 0, intent, 0);
-
-        manager.setRepeating(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime()+3000,3000,pendingIntent);
-    }*/
-
-//    public void sendOnChannel() {
-//        NotificationCompat.Builder nb = mNotificationHelper.getChannelNotification();
-//        mNotificationHelper.getManager().notify(1, nb.build());
-//    }
-
-//    @Override
-//    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-//        //Toast.makeText(ClientActivity.this,"Alarm set to "+ hourOfDay + ":" + minute, Toast.LENGTH_LONG).show();
-//        Calendar c = Calendar.getInstance();
-//        c.set(Calendar.HOUR_OF_DAY, hourOfDay);
-//        c.set(Calendar.MINUTE, minute);
-//        c.set(Calendar.SECOND, 0);
-//
-//        startAlarm(c);
-//    }
-
-//    public void startAlarm(Calendar c) {
-//        AlarmManager alarmManager = (AlarmManager) (getContext().getSystemService(Context.ALARM_SERVICE));
-//        Intent intent = new Intent(getContext(), AlertReceiver.class);
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 1, intent, 0);
-//
-//        alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
-//    }
-//
-//    private void cancelAlarm() {
-//        AlarmManager alarmManager = (AlarmManager) (getContext().getSystemService(Context.ALARM_SERVICE));
-//        Intent intent = new Intent(getContext(), AlertReceiver.class);
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 1, intent, 0);
-//
-//        alarmManager.cancel(pendingIntent);
-//        Toast.makeText(getContext(), "Alarm canceled.", Toast.LENGTH_LONG).show();
-//    }
 }

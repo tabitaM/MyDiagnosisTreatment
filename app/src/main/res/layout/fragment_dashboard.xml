@@ -62,13 +62,30 @@
         android:src="@drawable/ic_clock" />
 
     <TextView
-        android:id="@+id/takePills"
-        android:layout_width="match_parent"
+        android:id="@+id/pills_to_take_1"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/clock"
+        android:layout_marginStart="60sp"
         android:layout_marginTop="50sp"
+        android:text="@string/dashboard_pills_to_take_1" />
+
+    <TextView
+        android:id="@+id/pills_to_take_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pills_to_take_1"
+        android:layout_centerHorizontal="true"
         android:gravity="center"
-        android:text="You have 2 pills of paracetamol left to take today"
         android:textColor="@color/colorGray" />
+
+    <TextView
+        android:id="@+id/pills_to_take_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/pills_to_take_2"
+        android:layout_marginEnd="40sp"
+        android:text="@string/dashboard_pills_to_take_3" />
 
 </RelativeLayout>
