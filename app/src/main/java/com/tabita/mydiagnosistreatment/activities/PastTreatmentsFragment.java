@@ -13,7 +13,6 @@ import android.widget.ListView;
 import com.tabita.mydiagnosistreatment.R;
 import com.tabita.mydiagnosistreatment.model.Diagnosis;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -24,8 +23,6 @@ import java.util.stream.Collectors;
  */
 public class PastTreatmentsFragment extends Fragment {
 
-    private List<Diagnosis> pastTreatmentList = new ArrayList<>();
-
     public PastTreatmentsFragment() {
         // Required empty public constructor
     }
@@ -33,6 +30,11 @@ public class PastTreatmentsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_past_treatments, container, false);
+
+        ClientActivity clientActivity = (ClientActivity) getActivity();
+        List<Diagnosis> pastTreatmentList = Objects.requireNonNull(clientActivity).getPastTreatmentList();
+
+        // get GUI references
         ListView pastTreatmentListView = view.findViewById(R.id.past_treatments_list);
 
         pastTreatmentListView.setAdapter(
@@ -43,7 +45,4 @@ public class PastTreatmentsFragment extends Fragment {
         return view;
     }
 
-    public void setPastTreatmentList(List<Diagnosis> pastTreatmentList) {
-        this.pastTreatmentList = pastTreatmentList;
-    }
 }

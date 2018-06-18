@@ -60,13 +60,36 @@ public class ClientActivity extends AppCompatActivity {
         pastTreatmentsFragment = new PastTreatmentsFragment();
 
         setFragment(dashboardFragment);
-        getDataFromFirebase();
+
+        getCurrentDiagnosisFromFirebase();
+        getDiagnosisListFromFirebase();
+        getPastTreatmentsFromFirebase();
 
     }
 
-    private void getDataFromFirebase() {
+    private void getCurrentDiagnosisFromFirebase() {
 
-        // Diagnosis List
+        final DatabaseReference myRefUserDiagnosis = FirebaseDatabase.getInstance().getReference().child("users");
+        myRefUserDiagnosis.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Diagnosis userTreatment = dataSnapshot.child(deviceName).child("diagnosis").getValue(Diagnosis.class);
+                if (userTreatment != null && currentTreatment == null) {
+                    setCurrentTreatment(userTreatment);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Failed to read value
+                Log.w("ERROR", "Failed to read values diagnosis from firebase.", error.toException());
+            }
+        });
+
+    }
+
+    private void getDiagnosisListFromFirebase() {
+
         final DatabaseReference myRefDiagnosis = FirebaseDatabase.getInstance().getReference().child("diagnosis");
         myRefDiagnosis.addValueEventListener(new ValueEventListener() {
             @Override
@@ -77,8 +100,6 @@ public class ClientActivity extends AppCompatActivity {
                         diagnosisList.add(diagnosis);
                     }
                 }
-
-                diagnosisFragment.setDiagnosisList(diagnosisList);
             }
 
             @Override
@@ -87,15 +108,19 @@ public class ClientActivity extends AppCompatActivity {
                 Log.w("ERROR", "Failed to read values diagnosis from firebase.", error.toException());
             }
         });
+    }
 
-        // User diagnosis
-        final DatabaseReference myRefUserDiagnosis = FirebaseDatabase.getInstance().getReference().child("users");
-        myRefUserDiagnosis.addValueEventListener(new ValueEventListener() {
+    private void getPastTreatmentsFromFirebase() {
+
+        final DatabaseReference myRefUserPastTreatments = FirebaseDatabase.getInstance().getReference().child("users");
+        myRefUserPastTreatments.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Diagnosis userDiagnosis = dataSnapshot.child(deviceName).child("diagnosis").getValue(Diagnosis.class);
-                if (userDiagnosis != null) {
-                    setTreatment(userDiagnosis);
+                for (DataSnapshot postSnapshot : dataSnapshot.child(deviceName).child("pastTreatments").getChildren()) {
+                    Diagnosis pastDiagnosis = postSnapshot.getValue(Diagnosis.class);
+                    if (pastDiagnosis != null && !pastTreatmentList.contains(pastDiagnosis)) {
+                        pastTreatmentList.add(pastDiagnosis);
+                    }
                 }
             }
 
@@ -105,50 +130,28 @@ public class ClientActivity extends AppCompatActivity {
                 Log.w("ERROR", "Failed to read values diagnosis from firebase.", error.toException());
             }
         });
-
-        // User PastTreatments
-//        final DatabaseReference myRefUserPastTreatments = FirebaseDatabase.getInstance().getReference().child("users");
-//        myRefUserPastTreatments.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                for (DataSnapshot postSnapshot : dataSnapshot.child(deviceName).child("pastTreatments").getChildren()) {
-//                    Diagnosis pastDiagnosis = postSnapshot.getValue(Diagnosis.class);
-//                    if (pastDiagnosis != null && !pastTreatmentList.contains(pastDiagnosis)) {
-//                        pastTreatmentList.add(pastDiagnosis);
-//                        // Add item to past treatment fragment
-//                        pastTreatmentsFragment.setPastTreatmentList(pastTreatmentList);
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//                // Failed to read value
-//                Log.w("ERROR", "Failed to read values diagnosis from firebase.", error.toException());
-//            }
-//        });
     }
 
-    private void setUserDiagnosisToFirebase() {
-        // Add UserDiagnosis to firebase
+    private void setCurrentDiagnosisToFirebase() {
         DatabaseReference myRefUserDiagnosis = FirebaseDatabase.getInstance().getReference().child("users");
         myRefUserDiagnosis.child(deviceName).child("diagnosis").setValue(currentTreatment);
-
     }
 
-//    private void setPastTreatmentsToFirebase() {
-//        // Add PastTreatments diagnosis to firebase
-//        DatabaseReference myRefPastTreatments = FirebaseDatabase.getInstance().getReference().child("users");
-//        myRefPastTreatments.child(deviceName).child("pastTreatments").setValue(pastTreatmentList);
-//    }
+    private void setPastTreatmentsToFirebase() {
+        DatabaseReference myRefPastTreatments = FirebaseDatabase.getInstance().getReference().child("users");
+        myRefPastTreatments.child(deviceName).child("pastTreatments").setValue(pastTreatmentList);
+    }
 
+    private void setFragment(Fragment fragment) {
+        android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.mainLayout, fragment);
+        fragmentTransaction.commit();
+    }
 
-    public void setTreatment(Diagnosis diagnosis) {
-
+    public void subscribeToTreatment(Diagnosis diagnosis) {
         // Set current treatment for ClientActivity and DashboardFragment and Firebase
         setCurrentTreatment(diagnosis);
-        dashboardFragment.setCurrentTreatment(diagnosis);
-        setUserDiagnosisToFirebase();
+        setCurrentDiagnosisToFirebase();
 
         // Highlight dashboardFragment
         setFragment(dashboardFragment);
@@ -162,14 +165,20 @@ public class ClientActivity extends AppCompatActivity {
     public void addPastTreatment(Diagnosis diagnosis) {
         if (!pastTreatmentList.contains(diagnosis)) {
             pastTreatmentList.add(diagnosis);
-//            setPastTreatmentsToFirebase();
+            setPastTreatmentsToFirebase();
         }
     }
 
-    private void setFragment(Fragment fragment) {
-        android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.mainLayout, fragment);
-        fragmentTransaction.commit();
+    public Diagnosis getCurrentTreatment() {
+        return currentTreatment;
+    }
+
+    public List<Diagnosis> getDiagnosisList() {
+        return diagnosisList;
+    }
+
+    public List<Diagnosis> getPastTreatmentList() {
+        return pastTreatmentList;
     }
 
     public void logout(View view) {

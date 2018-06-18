@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
  */
 public class DashboardFragment extends Fragment {
 
-    public Diagnosis currentTreatment;
     private TextView currentTreatmentView;
     private TextView periodView;
     private ImageView clockView;
@@ -41,9 +40,11 @@ public class DashboardFragment extends Fragment {
     private TextView takePillsView2;
     private TextView takePillsView3;
 
-    NotificationCompat.Builder notificationBuilder;
-
+    private NotificationCompat.Builder notificationBuilder;
     private TextView dateView;
+
+    private ClientActivity clientActivity;
+    private Diagnosis currentTreatment;
 
     public DashboardFragment() {
         // Required empty public constructor
@@ -52,6 +53,11 @@ public class DashboardFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
+
+        // Get current treatment from parent
+        clientActivity = (ClientActivity) getActivity();
+        currentTreatment = Objects.requireNonNull(clientActivity).getCurrentTreatment();
+
 
         // get GUI references
         dateView = view.findViewById(R.id.date);
@@ -64,30 +70,33 @@ public class DashboardFragment extends Fragment {
         takePillsView2 = view.findViewById(R.id.pills_to_take_2);
         takePillsView3 = view.findViewById(R.id.pills_to_take_3);
 
+        // Show/Hide dash
+        if (currentTreatment == null) {
+            hideDash();
+            return view;
+        }
+
+        showDash();
+
         // Notification
         notificationBuilder = new NotificationCompat.Builder(Objects.requireNonNull(getActivity()), "NOTIFICATION_CHANNEL")
                 .setSmallIcon(R.drawable.ic_clock)
                 .setContentTitle("It's time to take your pills")
                 .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
                 .setPriority(NotificationCompat.PRIORITY_HIGH);
+        String meds = currentTreatment.getTreatment().getMedication().stream().map(Medication::getName).collect(Collectors.toList()).toString();
+        notificationBuilder.setContentText(meds);
+        setupNotification();
 
         // Set date
         dateView.setText(DateFormat.getDateInstance().format(new Date()));
 
         // Unsubscribe button
-        unsubscribeButton.setVisibility(View.GONE);
         unsubscribeButton.setOnClickListener(view1 -> {
-            ClientActivity clientActivity = (ClientActivity) getActivity();
-            clientActivity.addPastTreatment(currentTreatment);
-
-            currentTreatment = null;
-            clientActivity.setCurrentTreatment(null);
-
-            hideDash();
+            clientActivity.subscribeToTreatment(null);
             unsubscribeButton.setVisibility(View.GONE);
+            hideDash();
         });
-
-        clockView.setOnClickListener(view3 -> sendNotification());
 
         // Current Treatment click
         currentTreatmentView.setOnClickListener(view1 -> {
@@ -99,17 +108,10 @@ public class DashboardFragment extends Fragment {
         // Test notification
         clockView.setOnClickListener(view3 -> sendNotification());
 
-        // Show/Hide dash
-        if (currentTreatment != null) {
-            showDash();
-            setupNotification();
-        } else {
-            hideDash();
-        }
-
         return view;
     }
 
+    // Here is where we want to implement the alarm
     private void setupNotification() {
         Integer maxDose = Integer.parseInt(currentTreatment.getTreatment().getMedication().get(0).getDose());
         for (Medication medication : currentTreatment.getTreatment().getMedication()) {
@@ -122,6 +124,12 @@ public class DashboardFragment extends Fragment {
     }
 
     private void sendNotification() {
+        // Check Medication dose are all 0 -> add to PastTreatments
+        if (checkMedicationDoseZero()) {
+            clientActivity.addPastTreatment(currentTreatment);
+            return;
+        }
+
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(Objects.requireNonNull(getActivity()));
         notificationManager.notify(1234, notificationBuilder.build());
 
@@ -136,13 +144,7 @@ public class DashboardFragment extends Fragment {
         }
 
         // update client currentTreatment
-        ClientActivity clientActivity = (ClientActivity) getActivity();
-        clientActivity.setTreatment(currentTreatment);
-
-        // Check Medication dose are all 0 -> add to PastTreatments
-        if (checkMedicationDoseZero()) {
-            clientActivity.addPastTreatment(currentTreatment);
-        }
+        clientActivity.subscribeToTreatment(currentTreatment);
 
         // refresh GUI
         showDash();
@@ -160,19 +162,19 @@ public class DashboardFragment extends Fragment {
     }
 
     private void showDash() {
-
         currentTreatmentView.setText(currentTreatment.getName());
         periodView.setText(currentTreatment.getTreatment().getPeriod());
 
-        List<Medication> medicationList = currentTreatment.getTreatment().getMedication();
-        medicationListView.setAdapter(new MedicationAdapter(getActivity(), medicationList));
+        Diagnosis treatment = clientActivity.getDiagnosisList().stream()
+                .filter(diagnosis -> diagnosis.getName().equals(currentTreatment.getName()))
+                .findAny()
+                .orElse(null);
+        List<Medication> medicationListForPreview = Objects.requireNonNull(treatment).getTreatment().getMedication();
+        medicationListView.setAdapter(new MedicationAdapter(getActivity(), medicationListForPreview));
 
         takePillsView1.setVisibility(View.VISIBLE);
-        takePillsView2.setText(constructTakePillsText(medicationList));
+        takePillsView2.setText(constructTakePillsText(currentTreatment.getTreatment().getMedication()));
         takePillsView3.setVisibility(View.VISIBLE);
-
-        String meds = currentTreatment.getTreatment().getMedication().stream().map(Medication::getName).collect(Collectors.toList()).toString();
-        notificationBuilder.setContentText(meds);
     }
 
     private void hideDash() {
@@ -195,10 +197,6 @@ public class DashboardFragment extends Fragment {
         }
 
         return text.toString();
-    }
-
-    public void setCurrentTreatment(Diagnosis currentTreatment) {
-        this.currentTreatment = currentTreatment;
     }
 
 }

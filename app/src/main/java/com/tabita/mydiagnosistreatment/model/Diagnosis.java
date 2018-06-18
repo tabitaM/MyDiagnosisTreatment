@@ -2,6 +2,7 @@ package com.tabita.mydiagnosistreatment.model;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 public class Diagnosis implements Serializable {
 
@@ -34,6 +35,22 @@ public class Diagnosis implements Serializable {
 
     public void setTreatment(Treatment treatment) {
         this.treatment = treatment;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Diagnosis)) return false;
+        Diagnosis diagnosis = (Diagnosis) o;
+        return Objects.equals(getName(), diagnosis.getName()) &&
+                Objects.equals(getKeywords(), diagnosis.getKeywords()) &&
+                Objects.equals(getTreatment(), diagnosis.getTreatment());
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(getName(), getKeywords(), getTreatment());
     }
 
     @Override

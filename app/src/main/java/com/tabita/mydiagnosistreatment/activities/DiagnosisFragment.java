@@ -19,7 +19,6 @@ import android.widget.ListView;
 import com.tabita.mydiagnosistreatment.R;
 import com.tabita.mydiagnosistreatment.model.Diagnosis;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -34,9 +33,6 @@ public class DiagnosisFragment extends Fragment {
 
     static final int PICK_CONTACT_REQUEST = 1;
     public static final String KEY = "key";
-
-    private List<Diagnosis> diagnosisList = new ArrayList<>();
-
     private ListView diagnosisListView;
 
     public DiagnosisFragment() {
@@ -47,6 +43,12 @@ public class DiagnosisFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         View view = inflater.inflate(R.layout.fragment_diagnosis, container, false);
+
+        // Get diagnosis list from parent
+        ClientActivity clientActivity = (ClientActivity) getActivity();
+        List<Diagnosis> diagnosisList = Objects.requireNonNull(clientActivity).getDiagnosisList();
+
+        // get GUI references
         diagnosisListView = view.findViewById(R.id.diagnosis);
         EditText searchView = view.findViewById(R.id.search_input);
         Button searchButton = view.findViewById(R.id.search_submit_button);
@@ -105,12 +107,8 @@ public class DiagnosisFragment extends Fragment {
         if (requestCode == PICK_CONTACT_REQUEST && resultCode == DiagnosisDetailsActivity.RESULT_OK) {
             ClientActivity clientActivity = (ClientActivity) getActivity();
             if (clientActivity == null) return;
-            clientActivity.setTreatment((Diagnosis) data.getSerializableExtra(KEY));
+            clientActivity.subscribeToTreatment((Diagnosis) data.getSerializableExtra(KEY));
         }
-    }
-
-    public void setDiagnosisList(List<Diagnosis> diagnosisList) {
-        this.diagnosisList = diagnosisList;
     }
 
 }
