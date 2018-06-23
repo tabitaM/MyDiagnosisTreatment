@@ -1,6 +1,11 @@
 package com.tabita.mydiagnosistreatment.activities;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -41,6 +46,7 @@ public class DashboardFragment extends Fragment {
     private TextView takePillsView3;
 
     private NotificationCompat.Builder notificationBuilder;
+    private NotificationChannel channel;
     private TextView dateView;
 
     private ClientActivity clientActivity;
@@ -83,9 +89,10 @@ public class DashboardFragment extends Fragment {
                 .setSmallIcon(R.drawable.ic_clock)
                 .setContentTitle("It's time to take your pills")
                 .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
-                .setPriority(NotificationCompat.PRIORITY_HIGH);
+                .setPriority(NotificationCompat.PRIORITY_MAX);
         String meds = currentTreatment.getTreatment().getMedication().stream().map(Medication::getName).collect(Collectors.toList()).toString();
         notificationBuilder.setContentText(meds);
+        createNotificationChannel();
         setupNotification();
 
         // Set date
@@ -111,6 +118,22 @@ public class DashboardFragment extends Fragment {
         return view;
     }
 
+    private void createNotificationChannel() {
+        // Create the NotificationChannel for API26+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.channel_name);
+            String description = getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            channel = new NotificationChannel("NOTIFICATION_CHANNEL", name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = Objects.requireNonNull(getActivity()).getSystemService(NotificationManager.class);
+            assert notificationManager != null;
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
     // Here is where we want to implement the alarm
     private void setupNotification() {
         Integer maxDose = Integer.parseInt(currentTreatment.getTreatment().getMedication().get(0).getDose());
@@ -126,12 +149,17 @@ public class DashboardFragment extends Fragment {
     private void sendNotification() {
         // Check Medication dose are all 0 -> add to PastTreatments
         if (checkMedicationDoseZero()) {
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(Objects.requireNonNull(getActivity()));
+            notificationManager.notify(1234, notificationBuilder.build());
             clientActivity.addPastTreatment(currentTreatment);
+            clientActivity.subscribeToTreatment(null);
+            hideDash();
             return;
         }
-
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(Objects.requireNonNull(getActivity()));
-        notificationManager.notify(1234, notificationBuilder.build());
+        else {
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(Objects.requireNonNull(getActivity()));
+            notificationManager.notify(1234, notificationBuilder.build());
+        }
 
         // reduce number of pills to take
         for (Medication medication : currentTreatment.getTreatment().getMedication()) {
@@ -153,7 +181,7 @@ public class DashboardFragment extends Fragment {
     private Boolean checkMedicationDoseZero() {
         Boolean ok = true;
         for (Medication medication : currentTreatment.getTreatment().getMedication()) {
-            if (Integer.parseInt(medication.getDose()) != 0) {
+            if (Integer.parseInt(medication.getDose()) > 1) {
                 ok = false;
             }
         }
