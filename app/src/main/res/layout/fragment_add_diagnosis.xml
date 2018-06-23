@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10sp"
+    tools:context=".activities.DashboardFragment">
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:textColor="@color/colorAccent"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/login_user"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/date" />
+
+    <ImageView
+        android:id="@+id/add_diagnosis_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_add_black_24dp" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40sp"
+        android:text="@string/add_diagnosis"
+        android:textColor="@color/colorGray"
+        android:textSize="30sp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20sp"
+                android:text="@string/title_diagnosis"
+                android:textColor="@color/colorAccent" />
+
+            <View
+                android:id="@+id/diagnosis_delimiter"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/colorAccent" />
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <AutoCompleteTextView
+                    android:id="@+id/diagnosis_name"
+                    android:layout_width="match_parent"
+                    android:nextFocusDown="@id/keywords"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_diagnosis_name"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textColorHint="@color/colorGray" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <AutoCompleteTextView
+                    android:id="@+id/keywords"
+                    android:nextFocusDown="@id/period"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_keywords"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textColorHint="@color/colorGray" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <AutoCompleteTextView
+                    android:id="@+id/period"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_period"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textColorHint="@color/colorGray" />
+            </android.support.design.widget.TextInputLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/diagnosis_details_medication"
+                android:textColor="@color/colorAccent" />
+
+            <View
+                android:id="@+id/medication_delimiter"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/colorAccent" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="200sp"
+                    android:layout_height="wrap_content">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/medication1_name"
+                        android:layout_width="200sp"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/prompt_medication_name"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textColorHint="@color/colorGray" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="200sp"
+                    android:layout_height="wrap_content">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/medication1_dose"
+                        android:layout_width="200sp"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/prompt_medication_dose"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textColorHint="@color/colorGray" />
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="200sp"
+                    android:layout_height="wrap_content">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/medication2_name"
+                        android:layout_width="200sp"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/prompt_medication_name"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textColorHint="@color/colorGray" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="200sp"
+                    android:layout_height="wrap_content">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/medication2_dose"
+                        android:layout_width="200sp"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/prompt_medication_dose"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textColorHint="@color/colorGray" />
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="200sp"
+                    android:layout_height="wrap_content">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/medication3_name"
+                        android:layout_width="200sp"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/prompt_medication_name"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textColorHint="@color/colorGray" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="200sp"
+                    android:layout_height="wrap_content">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/medication3_dose"
+                        android:layout_width="200sp"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/prompt_medication_dose"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textColorHint="@color/colorGray" />
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/prompt_notes"
+                android:textColor="@color/colorAccent" />
+
+            <View
+                android:id="@+id/notes_delimiter"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/colorAccent" />
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <AutoCompleteTextView
+                    android:id="@+id/notes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_notes"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textColorHint="@color/colorGray" />
+            </android.support.design.widget.TextInputLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</RelativeLayout>

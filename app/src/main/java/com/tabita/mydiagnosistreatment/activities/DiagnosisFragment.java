@@ -18,6 +18,7 @@ import android.widget.ListView;
 
 import com.tabita.mydiagnosistreatment.R;
 import com.tabita.mydiagnosistreatment.model.Diagnosis;
+import com.tabita.mydiagnosistreatment.utils.UserType;
 
 import java.util.HashSet;
 import java.util.List;
@@ -92,6 +93,7 @@ public class DiagnosisFragment extends Fragment {
                         // Start DiagnosisDetailsActivity Activity
                         Intent intent = new Intent(getActivity(), DiagnosisDetailsActivity.class);
                         intent.putExtra(KEY, cursor);
+                        intent.putExtra(SelectActivity.KEY, UserType.patient);
                         startActivityForResult(intent, PICK_CONTACT_REQUEST);
                     }
                 }

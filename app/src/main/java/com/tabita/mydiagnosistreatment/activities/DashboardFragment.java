@@ -1,16 +1,12 @@
 package com.tabita.mydiagnosistreatment.activities;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
+import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,14 +14,16 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tabita.mydiagnosistreatment.R;
 import com.tabita.mydiagnosistreatment.model.Diagnosis;
 import com.tabita.mydiagnosistreatment.model.Medication;
+import com.tabita.mydiagnosistreatment.notification.MyNotification;
+import com.tabita.mydiagnosistreatment.notification.Receiver;
 import com.tabita.mydiagnosistreatment.utils.MedicationAdapter;
 
 import java.text.DateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -45,12 +43,10 @@ public class DashboardFragment extends Fragment {
     private TextView takePillsView2;
     private TextView takePillsView3;
 
-    private NotificationCompat.Builder notificationBuilder;
-    private NotificationChannel channel;
-    private TextView dateView;
-
     private ClientActivity clientActivity;
     private Diagnosis currentTreatment;
+
+    private MyNotification myNotification;
 
     public DashboardFragment() {
         // Required empty public constructor
@@ -66,7 +62,7 @@ public class DashboardFragment extends Fragment {
 
 
         // get GUI references
-        dateView = view.findViewById(R.id.date);
+        TextView dateView = view.findViewById(R.id.date);
         currentTreatmentView = view.findViewById(R.id.currentTreatment);
         unsubscribeButton = view.findViewById(R.id.unsubscribe);
         periodView = view.findViewById(R.id.period);
@@ -85,15 +81,10 @@ public class DashboardFragment extends Fragment {
         showDash();
 
         // Notification
-        notificationBuilder = new NotificationCompat.Builder(Objects.requireNonNull(getActivity()), "NOTIFICATION_CHANNEL")
-                .setSmallIcon(R.drawable.ic_clock)
-                .setContentTitle("It's time to take your pills")
-                .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
-                .setPriority(NotificationCompat.PRIORITY_MAX);
+        myNotification = new MyNotification(clientActivity);
         String meds = currentTreatment.getTreatment().getMedication().stream().map(Medication::getName).collect(Collectors.toList()).toString();
-        notificationBuilder.setContentText(meds);
-        createNotificationChannel();
-        setupNotification();
+        myNotification.setContentText(meds);
+        setupRegularNotifications();
 
         // Set date
         dateView.setText(DateFormat.getDateInstance().format(new Date()));
@@ -113,52 +104,82 @@ public class DashboardFragment extends Fragment {
         });
 
         // Test notification
-        clockView.setOnClickListener(view3 -> sendNotification());
+        clockView.setOnClickListener(view3 -> handleNotification());
 
         return view;
     }
 
-    private void createNotificationChannel() {
-        // Create the NotificationChannel for API26+
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = getString(R.string.channel_name);
-            String description = getString(R.string.channel_description);
-            int importance = NotificationManager.IMPORTANCE_HIGH;
-            channel = new NotificationChannel("NOTIFICATION_CHANNEL", name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = Objects.requireNonNull(getActivity()).getSystemService(NotificationManager.class);
-            assert notificationManager != null;
-            notificationManager.createNotificationChannel(channel);
-        }
-    }
 
     // Here is where we want to implement the alarm
-    private void setupNotification() {
-        Integer maxDose = Integer.parseInt(currentTreatment.getTreatment().getMedication().get(0).getDose());
-        for (Medication medication : currentTreatment.getTreatment().getMedication()) {
+    private void setupRegularNotifications() {
+        Integer maxDose = getMaxDose();
+
+        Integer interval = null;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 9);
+        switch (maxDose) {
+            case 1:
+                interval = 1000 * 60 * 60 * 24;
+                //calendar.set(Calendar.HOUR_OF_DAY, 9);
+                break;
+            case 2:
+                interval = 1000 * 60 * 60 * 12;
+                //calendar.set(Calendar.HOUR_OF_DAY, 9);
+                //calendar.set(Calendar.HOUR_OF_DAY, 18);
+                break;
+            case 3:
+                interval = 1000 * 60 * 60 * 8;
+                //calendar.set(Calendar.HOUR_OF_DAY, 9);
+                //calendar.set(Calendar.HOUR_OF_DAY, 12);
+                //calendar.set(Calendar.HOUR_OF_DAY, 18);
+                break;
+            case 4:
+                interval = 1000 * 60 * 60 * 6;
+                //calendar.set(Calendar.HOUR_OF_DAY, 9);
+                //calendar.set(Calendar.HOUR_OF_DAY, 12);
+                //calendar.set(Calendar.HOUR_OF_DAY, 18);
+                //calendar.set(Calendar.HOUR_OF_DAY, 22);
+                break;
+            case 6:
+                interval = 1000 * 60 * 60 * 4;
+                //calendar.set(Calendar.HOUR_OF_DAY, 9);
+                //calendar.set(Calendar.HOUR_OF_DAY, 12);
+                //calendar.set(Calendar.HOUR_OF_DAY, 16);
+                //calendar.set(Calendar.HOUR_OF_DAY, 18);
+                //calendar.set(Calendar.HOUR_OF_DAY, 22);
+                break;
+        }
+
+        Intent notifyIntent = new Intent(clientActivity, Receiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(clientActivity, 1234, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) clientActivity.getSystemService(Context.ALARM_SERVICE);
+        Objects.requireNonNull(alarmManager).setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), Objects.requireNonNull(interval), pendingIntent);
+//        Objects.requireNonNull(alarmManager).set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+    }
+
+    private Integer getMaxDose() {
+        Diagnosis treatment = Objects.requireNonNull(getTreatment());
+        Integer maxDose = Integer.parseInt(treatment.getTreatment().getMedication().get(0).getDose());
+        for (Medication medication : treatment.getTreatment().getMedication()) {
             Integer dose = Integer.parseInt(medication.getDose());
             if (maxDose < dose) {
                 maxDose = dose;
             }
         }
-        Toast.makeText(getActivity(), "MAX dose: " + maxDose, Toast.LENGTH_SHORT).show();
+
+        return maxDose;
     }
 
-    private void sendNotification() {
+    private void handleNotification() {
+        MyNotification.sendNotification();
+
         // Check Medication dose are all 0 -> add to PastTreatments
         if (checkMedicationDoseZero()) {
-            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(Objects.requireNonNull(getActivity()));
-            notificationManager.notify(1234, notificationBuilder.build());
             clientActivity.addPastTreatment(currentTreatment);
             clientActivity.subscribeToTreatment(null);
             hideDash();
             return;
-        }
-        else {
-            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(Objects.requireNonNull(getActivity()));
-            notificationManager.notify(1234, notificationBuilder.build());
         }
 
         // reduce number of pills to take
@@ -193,16 +214,20 @@ public class DashboardFragment extends Fragment {
         currentTreatmentView.setText(currentTreatment.getName());
         periodView.setText(currentTreatment.getTreatment().getPeriod());
 
-        Diagnosis treatment = clientActivity.getDiagnosisList().stream()
-                .filter(diagnosis -> diagnosis.getName().equals(currentTreatment.getName()))
-                .findAny()
-                .orElse(null);
-        List<Medication> medicationListForPreview = Objects.requireNonNull(treatment).getTreatment().getMedication();
-        medicationListView.setAdapter(new MedicationAdapter(getActivity(), medicationListForPreview));
+
+        List<Medication> medicationListForPreview = Objects.requireNonNull(getTreatment()).getTreatment().getMedication();
+        medicationListView.setAdapter(new MedicationAdapter(clientActivity, medicationListForPreview));
 
         takePillsView1.setVisibility(View.VISIBLE);
         takePillsView2.setText(constructTakePillsText(currentTreatment.getTreatment().getMedication()));
         takePillsView3.setVisibility(View.VISIBLE);
+    }
+
+    private Diagnosis getTreatment() {
+        return clientActivity.getDiagnosisList().stream()
+                .filter(diagnosis -> diagnosis.getName().equals(currentTreatment.getName()))
+                .findAny()
+                .orElse(null);
     }
 
     private void hideDash() {

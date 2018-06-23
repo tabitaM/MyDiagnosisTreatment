@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_add_diagnosis"
+        android:icon="@drawable/ic_add_circle_outline_black_24dp"
+        android:title="@string/title_add_diagnosis" />
+
+    <item
+        android:id="@+id/navigation_diagnosis"
+        android:icon="@mipmap/ic_view_list_black_24dp"
+        android:title="@string/title_diagnosis" />
+
+</menu>

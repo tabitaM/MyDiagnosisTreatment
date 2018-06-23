@@ -22,13 +22,14 @@
     <string name="title_activity_client">ClientActivity</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_diagnosis">Diagnosis</string>
+    <string name="title_add_diagnosis">Add Diagnosis</string>
     <string name="title_past_treatments">Past Treatments</string>
     <string name="diagnosis_details_treatment">Treatment</string>
     <string name="diagnosis_details_medication">Medication</string>
     <string name="diagnosis_details_dose">dose</string>
     <string name="diagnosis_details_notes_text">Notes</string>
     <string name="diagnosis_details_notes">Note details</string>
-    <string name="diagnosis_details_period">2 weeks</string>
+    <string name="diagnosis_details_period">14 days</string>
     <string name="diagnosis_details_name">Fever</string>
     <string name="diagnosis_details_subscribe">subscribe</string>
     <string name="diagnosis_details_unsubscribe">unsubscribe</string>
@@ -45,4 +46,19 @@
     <string name="dashboard_pills_to_take_3">left to take today</string>
     <string name="channel_name">My Channel</string>
     <string name="channel_description">My Channel Description</string>
+
+    <string name="my_diagnosis_treatment">My Diagnosis Treatment</string>
+    <string name="login_as_doctor">Login as doctor</string>
+    <string name="login_as_patient">Login as patient</string>
+    <string name="add_diagnosis">Add Diagnosis</string>
+    <string name="period">Period</string>
+
+    <string name="prompt_diagnosis_name">Diagnosis name</string>
+    <string name="prompt_period">period</string>
+    <string name="prompt_keywords">keywords</string>
+    <string name="prompt_notes">notes</string>
+    <string name="prompt_medication_name">name</string>
+    <string name="prompt_medication_dose">dose</string>
+    <string name="action_add_diagnosis">Add</string>
+
 </resources>

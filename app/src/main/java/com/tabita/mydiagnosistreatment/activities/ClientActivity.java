@@ -1,7 +1,5 @@
 package com.tabita.mydiagnosistreatment.activities;
 
-import android.bluetooth.BluetoothAdapter;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -9,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -22,6 +19,7 @@ import com.tabita.mydiagnosistreatment.model.Diagnosis;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ClientActivity extends AppCompatActivity {
 
@@ -34,16 +32,15 @@ public class ClientActivity extends AppCompatActivity {
     private List<Diagnosis> diagnosisList = new ArrayList<>();
     private List<Diagnosis> pastTreatmentList = new ArrayList<>();
 
-    private static String[] userID;
+    private static String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client);
 
-        Intent intent = getIntent();
-        String emailText = intent.getStringExtra("KEY");
-        userID = emailText.split("[\\p{Punct}@]");
+        String firebaseEmail = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail();
+        userID = Objects.requireNonNull(firebaseEmail).split("[\\p{Punct}@]")[0];
 
         navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(item -> {
@@ -65,13 +62,23 @@ public class ClientActivity extends AppCompatActivity {
         diagnosisFragment = new DiagnosisFragment();
         pastTreatmentsFragment = new PastTreatmentsFragment();
 
-        setFragment(diagnosisFragment);
-        navigation.setSelectedItemId(R.id.navigation_diagnosis);
-
         getCurrentDiagnosisFromFirebase();
         getDiagnosisListFromFirebase();
         getPastTreatmentsFromFirebase();
 
+        setFragmentOnStartup();
+    }
+
+    private void setFragmentOnStartup() {
+        Fragment fragment = diagnosisFragment;
+        Integer navigationId = R.id.navigation_diagnosis;
+        if (currentTreatment != null) {
+            fragment = dashboardFragment;
+            navigationId = R.id.navigation_dashboard;
+        }
+
+        setFragment(fragment);
+        navigation.setSelectedItemId(navigationId);
     }
 
     private void getCurrentDiagnosisFromFirebase() {
@@ -80,10 +87,11 @@ public class ClientActivity extends AppCompatActivity {
         myRefUserDiagnosis.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Diagnosis userTreatment = dataSnapshot.child(userID[0]).child("diagnosis").getValue(Diagnosis.class);
-                if (userTreatment != null && currentTreatment == null) {
-                    setCurrentTreatment(userTreatment);
+                Diagnosis firebaseTreatment = dataSnapshot.child(userID).child("diagnosis").getValue(Diagnosis.class);
+                if (firebaseTreatment != null) {
+                    setCurrentTreatment(firebaseTreatment);
                 }
+                myRefUserDiagnosis.removeEventListener(this);
             }
 
             @Override
@@ -92,7 +100,6 @@ public class ClientActivity extends AppCompatActivity {
                 Log.w("ERROR", "Failed to read values diagnosis from firebase.", error.toException());
             }
         });
-
     }
 
     private void getDiagnosisListFromFirebase() {
@@ -107,6 +114,7 @@ public class ClientActivity extends AppCompatActivity {
                         diagnosisList.add(diagnosis);
                     }
                 }
+                myRefDiagnosis.removeEventListener(this);
             }
 
             @Override
@@ -123,12 +131,13 @@ public class ClientActivity extends AppCompatActivity {
         myRefUserPastTreatments.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot : dataSnapshot.child(userID[0]).child("pastTreatments").getChildren()) {
+                for (DataSnapshot postSnapshot : dataSnapshot.child(userID).child("pastTreatments").getChildren()) {
                     Diagnosis pastDiagnosis = postSnapshot.getValue(Diagnosis.class);
-                    if (pastDiagnosis != null && !pastTreatmentList.contains(pastDiagnosis)) {
+                    if (pastDiagnosis != null) {
                         pastTreatmentList.add(pastDiagnosis);
                     }
                 }
+                myRefUserPastTreatments.removeEventListener(this);
             }
 
             @Override
@@ -141,12 +150,12 @@ public class ClientActivity extends AppCompatActivity {
 
     private void setCurrentDiagnosisToFirebase() {
         DatabaseReference myRefUserDiagnosis = FirebaseDatabase.getInstance().getReference().child("users");
-        myRefUserDiagnosis.child(userID[0]).child("diagnosis").setValue(currentTreatment);
+        myRefUserDiagnosis.child(userID).child("diagnosis").setValue(currentTreatment);
     }
 
     private void setPastTreatmentsToFirebase() {
         DatabaseReference myRefPastTreatments = FirebaseDatabase.getInstance().getReference().child("users");
-        myRefPastTreatments.child(userID[0]).child("pastTreatments").setValue(pastTreatmentList);
+        myRefPastTreatments.child(userID).child("pastTreatments").setValue(pastTreatmentList);
     }
 
     private void setFragment(Fragment fragment) {

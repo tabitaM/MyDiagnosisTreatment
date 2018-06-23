@@ -10,6 +10,11 @@ public class Medication implements Serializable {
     public Medication() {
     }
 
+    public Medication(String name, String dose) {
+        this.name = name;
+        this.dose = dose;
+    }
+
     public String getName() {
         return name;
     }

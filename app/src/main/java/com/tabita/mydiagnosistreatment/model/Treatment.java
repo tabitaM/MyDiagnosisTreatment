@@ -13,6 +13,12 @@ public class Treatment implements Serializable {
     public Treatment() {
     }
 
+    public Treatment(String notes, String period, List<Medication> medication) {
+        this.notes = notes;
+        this.period = period;
+        this.medication = medication;
+    }
+
     public String getNotes() {
         return notes;
     }

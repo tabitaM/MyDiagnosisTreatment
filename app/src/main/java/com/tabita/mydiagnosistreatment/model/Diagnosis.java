@@ -13,6 +13,12 @@ public class Diagnosis implements Serializable {
     public Diagnosis() {
     }
 
+    public Diagnosis(String name, List<String> keywords, Treatment treatment) {
+        this.name = name;
+        this.keywords = keywords;
+        this.treatment = treatment;
+    }
+
     public String getName() {
         return name;
     }

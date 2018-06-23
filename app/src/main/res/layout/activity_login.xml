@@ -17,6 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
+        android:layout_marginTop="50dp"
         android:visibility="gone" />
 
     <ScrollView
@@ -30,6 +31,14 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="40dp"
+                android:layout_marginTop="30dp"
+                android:src="@drawable/doctor" />
+
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -41,8 +50,8 @@
                     android:hint="@string/prompt_email"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
-                    android:text="tabita@gmail.com"
                     android:singleLine="true"
+                    android:text="tabita@gmail.com"
                     android:textColorHint="@color/colorGray" />
 
             </android.support.design.widget.TextInputLayout>
@@ -53,17 +62,17 @@
 
                 <EditText
                     android:id="@+id/password"
-                    android:text="tab1234"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_password"
-                    android:textColorHint="@color/colorGray"
                     android:imeActionId="6"
                     android:imeActionLabel="@string/action_sign_in_short"
                     android:imeOptions="actionUnspecified"
                     android:inputType="textPassword"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:text="tab1234"
+                    android:textColorHint="@color/colorGray" />
 
             </android.support.design.widget.TextInputLayout>
 
