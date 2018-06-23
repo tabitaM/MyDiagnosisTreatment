@@ -27,6 +27,7 @@
         <activity
             android:name=".activities.ClientActivity"
             android:label="@string/title_activity_client"
+            android:windowSoftInputMode="stateAlwaysHidden"
             />
         <activity
             android:name=".activities.DiagnosisDetailsActivity" />

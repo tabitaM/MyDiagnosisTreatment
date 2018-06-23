@@ -51,8 +51,11 @@ public class SignUpActivity extends AppCompatActivity {
         LoginActivity.mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
+                        Intent intent = new Intent(this, ClientActivity.class);
+                        intent.putExtra("KEY",email);
+                        startActivity(intent);
                         // Sign in success, update UI with the signed-in user's information
-                        startActivity(new Intent(SignUpActivity.this, ClientActivity.class));
+                        //startActivity(new Intent(SignUpActivity.this, ClientActivity.class));
                     } else {
                         // If sign in fails, display a message to the user.
                         Toast.makeText(SignUpActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();

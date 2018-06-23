@@ -95,6 +95,7 @@ public class DiagnosisFragment extends Fragment {
                         startActivityForResult(intent, PICK_CONTACT_REQUEST);
                     }
                 }
+                searchView.getText().clear();
             });
         });
 
